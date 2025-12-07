@@ -3,6 +3,9 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
+# Priorizar variables de entorno para ejecución desatendida
+$User = if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') { $env:GITEA_BOOTSTRAP_USER } else { $User }
+
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
 

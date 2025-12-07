@@ -3,6 +3,12 @@ param(
   [switch]$DisableRealtime
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+if ($env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -and $env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -ne '') {
+  $Paths = $env:GITEA_BOOTSTRAP_AV_EXCLUSIONS.Split(';') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+}
+
 $hasDefender = Get-Command Add-MpPreference -ErrorAction SilentlyContinue
 if ($null -eq $hasDefender) { return }
 if ($Paths) {

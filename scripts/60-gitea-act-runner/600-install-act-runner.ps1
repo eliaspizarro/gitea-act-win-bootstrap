@@ -4,6 +4,14 @@ param(
   [string]$AssetUrl
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
+} else { 
+  $InstallDir 
+}
+
 if (-not (Test-Path -LiteralPath $InstallDir)) { New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null }
 $exe = Join-Path $InstallDir 'act_runner.exe'
 if (Test-Path -LiteralPath $exe) { return }

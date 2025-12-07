@@ -2,6 +2,12 @@ param(
   [switch]$AllowWinRM
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+if ($env:GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM -and $env:GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM -eq 'true') {
+  $AllowWinRM = $true
+}
+
 $profiles = @('Domain','Private','Public')
 foreach ($p in $profiles) { try { Set-NetFirewallProfile -Profile $p -Enabled True } catch {} }
 if ($AllowWinRM) {

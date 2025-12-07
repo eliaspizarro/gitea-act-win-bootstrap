@@ -4,6 +4,11 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# Priorizar variables de entorno para ejecución desatendida
+if ($env:GITEA_BOOTSTRAP_ENABLE_WINRM -and $env:GITEA_BOOTSTRAP_ENABLE_WINRM -eq 'true') {
+  $Enable = $true
+}
+
 try {
   if (-not $Enable) { exit 0 }
 

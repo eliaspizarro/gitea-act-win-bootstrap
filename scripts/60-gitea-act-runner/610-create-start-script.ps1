@@ -4,6 +4,15 @@ param(
   [string]$LogDir = 'C:\Logs\ActRunner'
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
+} else { 
+  $InstallDir 
+}
+$LogDir = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } else { $LogDir }
+
 if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $InstallDir" }
 if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
 $exe = Join-Path $InstallDir 'act_runner.exe'

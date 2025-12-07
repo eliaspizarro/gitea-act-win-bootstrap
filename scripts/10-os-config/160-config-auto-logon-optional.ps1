@@ -5,6 +5,23 @@ param(
   [string]$Domain = ''
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+if ($env:GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE -and $env:GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE -eq 'true') {
+  $Enable = $true
+}
+if ($Enable) {
+  if ($env:GITEA_BOOTSTRAP_AUTO_LOGON_USER -and $env:GITEA_BOOTSTRAP_AUTO_LOGON_USER -ne '') {
+    $User = $env:GITEA_BOOTSTRAP_AUTO_LOGON_USER
+  }
+  if ($env:GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD -and $env:GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD -ne '' -and -not $Password) {
+    $Password = ConvertTo-SecureString -String $env:GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD -AsPlainText -Force
+  }
+  if ($env:GITEA_BOOTSTRAP_AUTO_LOGON_DOMAIN -and $env:GITEA_BOOTSTRAP_AUTO_LOGON_DOMAIN -ne '') {
+    $Domain = $env:GITEA_BOOTSTRAP_AUTO_LOGON_DOMAIN
+  }
+}
+
 if (-not $Enable) { return }
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }

@@ -6,6 +6,12 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
+# Priorizar variables de entorno para ejecución desatendida
+$User = if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') { $env:GITEA_BOOTSTRAP_USER } else { $User }
+$BaseDir = if ($env:GITEA_BOOTSTRAP_PROFILE_BASE_DIR -and $env:GITEA_BOOTSTRAP_PROFILE_BASE_DIR -ne '') { $env:GITEA_BOOTSTRAP_PROFILE_BASE_DIR } else { $BaseDir }
+$WorkDirName = if ($env:GITEA_BOOTSTRAP_PROFILE_WORK_DIR -and $env:GITEA_BOOTSTRAP_PROFILE_WORK_DIR -ne '') { $env:GITEA_BOOTSTRAP_PROFILE_WORK_DIR } else { $WorkDirName }
+$CacheDirName = if ($env:GITEA_BOOTSTRAP_PROFILE_CACHE_DIR -and $env:GITEA_BOOTSTRAP_PROFILE_CACHE_DIR -ne '') { $env:GITEA_BOOTSTRAP_PROFILE_CACHE_DIR } else { $CacheDirName }
+
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
 

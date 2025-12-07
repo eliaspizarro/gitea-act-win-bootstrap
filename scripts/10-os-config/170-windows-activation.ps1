@@ -3,7 +3,16 @@ param(
   [SecureString]$ProductKey
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+$CheckOnly = if ($env:GITEA_BOOTSTRAP_CHECK_ONLY -eq 'true') { $true } else { $CheckOnly }
+if ($env:GITEA_BOOTSTRAP_PRODUCT_KEY -and -not $ProductKey) {
+  $ProductKey = ConvertTo-SecureString $env:GITEA_BOOTSTRAP_PRODUCT_KEY -AsPlainText -Force
+}
+
 $slmgr = Join-Path $env:WINDIR 'System32\slmgr.vbs'
+
+# Script compatible con claves KMS, MAK y Retail para Windows Server 2025 Core
 if ($CheckOnly) {
   cscript.exe //B //NoLogo $slmgr /dli | Out-Null
   return

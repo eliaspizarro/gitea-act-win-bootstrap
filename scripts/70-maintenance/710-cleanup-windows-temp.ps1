@@ -2,6 +2,12 @@ param(
   [int]$OlderThanDays = 7
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+if ($env:GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS -and $env:GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS -ne '') {
+  $OlderThanDays = [int]$env:GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS
+}
+
 $limit = (Get-Date).AddDays(-$OlderThanDays)
 $targets = @()
 $targets += $env:TEMP

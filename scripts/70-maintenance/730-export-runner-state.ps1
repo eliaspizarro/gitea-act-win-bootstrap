@@ -4,6 +4,12 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
+# Priorizar variables de entorno para ejecución desatendida
+$OutputDir = if ($env:GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR -and $env:GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR -ne '') { $env:GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR } else { $OutputDir }
+if ($env:GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS -and $env:GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS -eq 'true') {
+  $IncludeDiagnostics = $true
+}
+
 if (-not (Test-Path -LiteralPath $OutputDir)) { New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null }
 $ts = Get-Date -Format 'yyyyMMdd_HHmmss'
 $stage = Join-Path $env:TEMP ("runner_state_" + $ts)

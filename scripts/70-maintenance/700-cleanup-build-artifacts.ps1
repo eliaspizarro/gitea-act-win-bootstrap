@@ -3,6 +3,15 @@ param(
   [int]$OlderThanDays = 14
 )
 $ErrorActionPreference = 'Stop'
+
+# Priorizar variables de entorno para ejecución desatendida
+if ($env:GITEA_BOOTSTRAP_CLEANUP_PATHS -and $env:GITEA_BOOTSTRAP_CLEANUP_PATHS -ne '') {
+  $Paths = $env:GITEA_BOOTSTRAP_CLEANUP_PATHS.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+}
+if ($env:GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS -and $env:GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS -ne '') {
+  $OlderThanDays = [int]$env:GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS
+}
+
 $limit = (Get-Date).AddDays(-$OlderThanDays)
 foreach ($p in $Paths) {
   if (-not (Test-Path -LiteralPath $p)) { continue }
