@@ -16,6 +16,19 @@ Bootstrap automatizado y **100% desatendido** para Gitea `act_runner` en Windows
 
 ## 🎯 Quick Start (Modo Desatendido)
 
+### 📥 Descargar Última Versión
+
+```powershell
+# Descargar el release más reciente
+Invoke-WebRequest -Uri "https://github.com/eliaspizarro/gitea-act-win-bootstrap/archive/refs/tags/latest.zip" -OutFile "gitea-act-win-bootstrap-latest.zip"
+
+# Extraer el archivo
+Expand-Archive -Path "gitea-act-win-bootstrap-latest.zip" -DestinationPath "." -Force
+
+# Entrar al directorio del proyecto
+cd gitea-act-win-bootstrap-*
+```
+
 ### 1. Configurar Variables de Entorno
 ```powershell
 # Copiar archivo de configuración
