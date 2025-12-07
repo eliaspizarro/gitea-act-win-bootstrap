@@ -34,7 +34,16 @@ GITEA_BOOTSTRAP_USER = 'gitea-runner'
 GITEA_BOOTSTRAP_RUNNER_PASSWORD = 'ClaveSegura123!@#'
 ```
 
-### 2. Validar Configuración
+### 2. Cargar Variables de Entorno
+```powershell
+# Cargar las variables en la sesión actual de PowerShell (¡IMPORTANTE!)
+. .\configs\set-env.ps1
+
+# Verificar que las variables se cargaron correctamente
+Get-ChildItem Env:GITEA_BOOTSTRAP_*
+```
+
+### 3. Validar Configuración
 ```powershell
 # Ejecutar como administrador
 Get-ChildItem ".\scripts\00-bootstrap\040-validate-environment.ps1" | ForEach-Object { & $_.FullName }
