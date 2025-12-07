@@ -35,7 +35,21 @@ $optionalVars = @(
   @{ Name = 'GITEA_BOOTSTRAP_INSTALL_DIR'; Description = 'Directorio base para herramientas'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_CHOCO_CACHE_DIR'; Description = 'Directorio caché de Chocolatey'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_LOG_DIR'; Description = 'Directorio base para logs'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_AV_EXCLUSIONS'; Description = 'Directorios a excluir del antivirus'; Required = $false }
+  @{ Name = 'GITEA_BOOTSTRAP_AV_EXCLUSIONS'; Description = 'Directorios a excluir del antivirus'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM'; Description = 'Permitir WinRM en firewall (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_PATHS'; Description = 'Directorios para limpieza automática'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Días para limpieza automática'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Días para limpieza temporales'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR'; Description = 'Directorio para exportar estado'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS'; Description = 'Incluir diagnóstico en exportación (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_ENABLE_WINRM'; Description = 'Habilitar WinRM (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_ENABLE_SSH'; Description = 'Habilitar servidor SSH (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_SSH_PORT'; Description = 'Puerto SSH (default: 22)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_SSH_FIREWALL'; Description = 'Permitir SSH en firewall (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE'; Description = 'Habilitar auto-logon (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_USER'; Description = 'Usuario para auto-logon'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD'; Description = 'Contraseña para auto-logon'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_DOMAIN'; Description = 'Dominio para auto-logon'; Required = $false }
 )
 
 function Write-ValidationResult {

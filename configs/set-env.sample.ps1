@@ -35,7 +35,7 @@ $envVars = @{
   # Configuración de usuario del runner
   GITEA_BOOTSTRAP_USER = 'gitea-runner'                                    # Nombre de usuario local que ejecutará el servicio del runner
   GITEA_BOOTSTRAP_RUNNER_PASSWORD = '${RUNNER_PASSWORD}'                   # Contraseña segura: mínimo 12 caracteres, mayúsculas, minúsculas, números y símbolos
-  GITEA_BOOTSTRAP_USER_GROUPS = 'Users,Performance Log Users,Remote Desktop Users' # Grupos a los que se agregará el usuario (separados por ,)
+  GITEA_BOOTSTRAP_USER_GROUPS = 'Users,Performance Log Users'                  # Grupos a los que se agregará el usuario (separados por ,)
   
   # Configuración de carpetas de perfil de usuario
   GITEA_BOOTSTRAP_PROFILE_BASE_DIR = 'C:\CI'                               # Directorio base para perfiles de usuario (work, cache)
@@ -79,6 +79,11 @@ $envVars = @{
   
   # Configuración opcional de WinRM
   GITEA_BOOTSTRAP_ENABLE_WINRM = 'false'                                    # Habilitar WinRM para administración remota (true/false)
+  
+  # Configuración opcional de SSH
+  GITEA_BOOTSTRAP_ENABLE_SSH = 'false'                                     # Habilitar servidor SSH para administración remota (true/false)
+  GITEA_BOOTSTRAP_SSH_PORT = '22'                                          # Puerto SSH (ej: 22, 2222) - cambiar para seguridad
+  GITEA_BOOTSTRAP_SSH_FIREWALL = 'true'                                    # Permitir SSH a través del firewall (true/false)
   
   # Configuración opcional de auto-logon
   GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE = 'false'                               # Habilitar auto-logon de Windows (true/false)
