@@ -1,0 +1,12 @@
+log:
+  level: info
+server:
+  url: ${GITEA_SERVER_URL}
+  token: ${GITEA_RUNNER_TOKEN}
+runner:
+  capacity: ${RUNNER_CONCURRENCY}
+  env_file: ""
+  name: ${RUNNER_NAME}
+  labels:
+    - ${RUNNER_LABELS}
+  workdir: ${RUNNER_WORKDIR}
