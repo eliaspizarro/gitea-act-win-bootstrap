@@ -8,6 +8,15 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
+# Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR -and $env:GITEA_BOOTSTRAP_INSTALL_DIR -ne '') { $env:GITEA_BOOTSTRAP_INSTALL_DIR } else { $InstallDir }
+if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') {
+  $User = $env:GITEA_BOOTSTRAP_USER
+}
+if ($env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -and $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -ne '' -and -not $Password) {
+  $Password = ConvertTo-SecureString -String $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -AsPlainText -Force
+}
+
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
 
