@@ -1,0 +1,27 @@
+# Archivos de configuración con información sensible
+configs/set-env.ps1
+configs/act-runner.yaml
+
+# Logs y archivos temporales
+logs/
+*.log
+*.tmp
+temp/
+
+# Archivos de sistema y backups
+*.bak
+*.backup
+System Volume Information/
+$RECYCLE.BIN/
+
+# Archivos de IDE y editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos de Windows
+Thumbs.db
+Desktop.ini
+.DS_Store

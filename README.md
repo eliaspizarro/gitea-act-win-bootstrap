@@ -65,6 +65,12 @@ Get-Service -Name "gitea-act-runner"
 | [🐛 Troubleshooting](docs/troubleshooting.md) | Problemas comunes y soluciones |
 | [🛡️ Hardening](docs/hardening-checklist.md) | Seguridad y mejores prácticas |
 
+### 🔗 Enlaces Rápidos
+- [📁 Repositorio en GitHub](https://github.com/eliaspizarro/gitea-act-win-bootstrap)
+- [⚙️ Configuración del Runner](docs/ENVIRONMENT_VARIABLES.md#gitea-runner-configuration)
+- [🔒 Guía de Seguridad](docs/hardening-checklist.md)
+- [❓ Preguntas Frecuentes](docs/troubleshooting.md)
+
 ## 🏗️ Arquitectura
 
 ```
