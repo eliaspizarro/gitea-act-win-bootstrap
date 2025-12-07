@@ -1,17 +1,21 @@
 param(
   [string]$User = 'gitea-runner',
-  [SecureString]$Password,
-  [switch]$FromEnv
+  [SecureString]$Password
 )
 $ErrorActionPreference = 'Stop'
 
 # Priorizar variables de entorno para ejecución desatendida
 $User = if ($env:GITEA_BOOTSTRAP_USER) { $env:GITEA_BOOTSTRAP_USER } else { $User }
-if ($FromEnv -and -not $Password) {
+
+# Si no se proporcionó password, usar variable de entorno automáticamente
+if (-not $Password) {
   $envPw = $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD
-  if ($envPw) { $Password = ConvertTo-SecureString -String $envPw -AsPlainText -Force }
+  if ($envPw) { 
+    $Password = ConvertTo-SecureString -String $envPw -AsPlainText -Force 
+  } else {
+    throw 'Debe proveer -Password o configurar GITEA_BOOTSTRAP_RUNNER_PASSWORD'
+  }
 }
-if (-not $Password) { throw 'Debe proveer -Password o -FromEnv con GITEA_BOOTSTRAP_RUNNER_PASSWORD' }
 
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
