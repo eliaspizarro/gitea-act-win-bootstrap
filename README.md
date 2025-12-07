@@ -26,7 +26,7 @@ Invoke-WebRequest -Uri "https://github.com/eliaspizarro/gitea-act-win-bootstrap/
 Expand-Archive -Path "gitea-act-win-bootstrap-latest.zip" -DestinationPath "." -Force
 
 # Entrar al directorio del proyecto
-cd gitea-act-win-bootstrap-*
+cd gitea-act-win-bootstrap-latest
 ```
 
 ### 1. Configurar Variables de Entorno
