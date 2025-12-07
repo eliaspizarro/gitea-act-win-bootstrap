@@ -37,7 +37,7 @@ GITEA_BOOTSTRAP_RUNNER_PASSWORD = 'ClaveSegura123!@#'
 ### 2. Validar Configuración
 ```powershell
 # Ejecutar como administrador
-.\scripts\00-bootstrap\040-validate-environment.ps1
+Get-ChildItem ".\scripts\00-bootstrap\040-validate-environment.ps1" | ForEach-Object { & $_.FullName }
 ```
 
 ### 3. Ejecutar Bootstrap Completo
@@ -45,28 +45,28 @@ GITEA_BOOTSTRAP_RUNNER_PASSWORD = 'ClaveSegura123!@#'
 **Opción A: Ejecución por grupo (recomendado)**
 ```powershell
 # Grupo 00: Bootstrap y validación
-.\scripts\00-bootstrap\*.ps1
+Get-ChildItem ".\scripts\00-bootstrap\*.ps1" | ForEach-Object { & $_.FullName }
 
 # Grupo 10: Configuración del sistema operativo
-.\scripts\10-os-config\*.ps1
+Get-ChildItem ".\scripts\10-os-config\*.ps1" | ForEach-Object { & $_.FullName }
 
 # Grupo 20: Usuarios y permisos
-.\scripts\20-users-and-permissions\*.ps1
+Get-ChildItem ".\scripts\20-users-and-permissions\*.ps1" | ForEach-Object { & $_.FullName }
 
 # Grupo 30: Hardening de seguridad
-.\scripts\30-security-hardening\*.ps1
+Get-ChildItem ".\scripts\30-security-hardening\*.ps1" | ForEach-Object { & $_.FullName }
 
 # Grupo 40: Herramientas del sistema
-.\scripts\40-system-tools\*.ps1
+Get-ChildItem ".\scripts\40-system-tools\*.ps1" | ForEach-Object { & $_.FullName }
 
 # Grupo 50: Toolchain de compilación
-.\scripts\50-build-toolchain\*.ps1
+Get-ChildItem ".\scripts\50-build-toolchain\*.ps1" | ForEach-Object { & $_.FullName }
 
 # Grupo 60: Gitea Act Runner
-.\scripts\60-gitea-act-runner\*.ps1
+Get-ChildItem ".\scripts\60-gitea-act-runner\*.ps1" | ForEach-Object { & $_.FullName }
 
 # Grupo 70: Mantenimiento (opcional)
-.\scripts\70-maintenance\*.ps1
+Get-ChildItem ".\scripts\70-maintenance\*.ps1" | ForEach-Object { & $_.FullName }
 ```
 
 **Opción B: Ejecución con PowerShell (automatizada)**
