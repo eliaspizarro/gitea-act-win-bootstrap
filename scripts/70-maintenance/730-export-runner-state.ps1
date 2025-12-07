@@ -1,10 +1,16 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [string]$OutputDir = 'C:\Logs',
   [switch]$IncludeDiagnostics
 )
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecución desatendida
+# Priorizar variables de entorno para ejecuciÃ³n desatendida
 $OutputDir = if ($env:GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR -and $env:GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR -ne '') { $env:GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR } else { $OutputDir }
 if ($env:GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS -and $env:GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS -eq 'true') {
   $IncludeDiagnostics = $true
@@ -31,11 +37,14 @@ foreach ($i in $items) {
     try {
       if ((Get-Item $i).PSIsContainer) { Copy-Item -Recurse -Force -Path $i -Destination $dest }
       else { Copy-Item -Force -Path $i -Destination $dest }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
     } catch {}
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
 
-# Diagnóstico opcional
+# DiagnÃ³stico opcional
 if ($IncludeDiagnostics) {
   $diag = Join-Path $stage 'diagnostics.txt'
   $lines = New-Object System.Collections.Generic.List[string]
@@ -46,8 +55,10 @@ if ($IncludeDiagnostics) {
   try {
     $runner = Get-Command act_runner -ErrorAction SilentlyContinue
     if ($runner) { $lines.Add("act_runner: " + (& act_runner --version 2>$null)) }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   } catch {}
   Set-Content -Path $diag -Value $lines -Encoding UTF8
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
 
 # Empaquetar
@@ -59,3 +70,5 @@ Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip -Force
 Remove-Item -Recurse -Force -Path $stage -ErrorAction SilentlyContinue | Out-Null
 
 Write-Output $zip
+
+

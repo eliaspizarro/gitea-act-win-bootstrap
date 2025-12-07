@@ -1,3 +1,9 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 $ErrorActionPreference = 'Stop'
 $paths = New-Object System.Collections.Generic.List[string]
 $paths.Add('C:\Tools') | Out-Null
@@ -16,3 +22,7 @@ foreach ($p in $paths) {
   }
 }
 [Environment]::SetEnvironmentVariable('Path', $machinePath, 'Machine')
+
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+

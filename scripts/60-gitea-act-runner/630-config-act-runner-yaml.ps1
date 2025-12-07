@@ -1,3 +1,9 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$OutputPath,
@@ -37,3 +43,7 @@ $yaml += "  workdir: $WorkDir"
 $yamlText = ($yaml -join [Environment]::NewLine)
 Set-Content -Path $cfg -Value $yamlText -Encoding UTF8
 Write-Output $cfg
+
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+

@@ -1,3 +1,9 @@
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 $ErrorActionPreference = 'Stop'
 
 try {
@@ -12,10 +18,13 @@ try {
     }
   }
 
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   exit 0
 }
 catch {
+  Write-ScriptLog -Type 'Error' -Message $_.Exception.Message
   Write-Error $_
   exit 1
 }
+
 

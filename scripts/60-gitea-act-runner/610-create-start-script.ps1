@@ -1,3 +1,9 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$ConfigPath,
@@ -5,7 +11,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecución desatendida
+# Priorizar variables de entorno para ejecuciÃ³n desatendida
 $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
   Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
 } else { 
@@ -31,7 +37,7 @@ param(
 
 `$ErrorActionPreference = 'Stop'
 
-# Función de logging
+# FunciÃ³n de logging
 function Write-Log {
   param([string]`$Message)
   `$timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
@@ -52,12 +58,12 @@ Write-Log "Directorio de trabajo: `$InstallDir"
 
 # 3. Bucle infinito: si el runner se cae, se vuelve a levantar con backoff exponencial
 `$restartCount = 0
-`$maxBackoffSeconds = 300  # Máximo 5 minutos de espera
+`$maxBackoffSeconds = 300  # MÃ¡ximo 5 minutos de espera
 `$shouldExit = `$false
 
 # Manejo graceful shutdown
 trap {
-  Write-Log "Recibida señal de terminación. Deteniendo graceful shutdown..."
+  Write-Log "Recibida seÃ±al de terminaciÃ³n. Deteniendo graceful shutdown..."
   `$shouldExit = `$true
 }
 
@@ -72,26 +78,38 @@ while (`$true) {
     `$process = Start-Process -FilePath "`$exe" -ArgumentList @('daemon','--config',"`$ConfigPath") -WorkingDirectory "`$InstallDir" -WindowStyle Hidden -PassThru -Wait
     
     if (`$process.ExitCode -ne 0) {
-      Write-Log "act_runner terminó con código de salida: `$(`$process.ExitCode)"
+      Write-Log "act_runner terminÃ³ con cÃ³digo de salida: `$(`$process.ExitCode)"
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
     } else {
-      Write-Log "act_runner terminó normalmente"
-      `$restartCount = 0  # Resetear contador si terminó normalmente
+      Write-Log "act_runner terminÃ³ normalmente"
+      `$restartCount = 0  # Resetear contador si terminÃ³ normalmente
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
     }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   catch {
+  Write-ScriptLog -Type 'Error' -Message $_.Exception.Message
+  Write-Error $_
+  exit 1
+}
     Write-Log "ERROR al iniciar act_runner: `$_"
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   
   if (`$shouldExit) {
     break
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   
   `$restartCount++
-  # Backoff exponencial: 5s, 10s, 20s, 40s, 80s, 160s, 300s (máximo)
+  # Backoff exponencial: 5s, 10s, 20s, 40s, 80s, 160s, 300s (mÃ¡ximo)
   `$waitSeconds = [Math]::Min(5 * [Math]::Pow(2, (`$restartCount - 1)), `$maxBackoffSeconds)
   Write-Log "Esperando `$waitSeconds segundos antes de reiniciar..."
   Start-Sleep -Seconds `$waitSeconds
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
 "@
 Set-Content -Path $startScript -Value $script -Encoding UTF8
 Write-Output $startScript
+
+

@@ -1,3 +1,9 @@
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [string]$User = 'gitea-runner'
 )
@@ -13,3 +19,6 @@ if ($null -eq $u) {
   New-LocalUser -Name $User -Password $sec -PasswordNeverExpires:$true -AccountNeverExpires:$true | Out-Null
   Enable-LocalUser -Name $User | Out-Null
 }
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+

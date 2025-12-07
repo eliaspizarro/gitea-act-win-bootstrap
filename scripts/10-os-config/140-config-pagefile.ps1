@@ -1,3 +1,9 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [ValidateSet('Auto','Custom')][string]$Mode = 'Auto',
   [int]$InitialMB,
@@ -5,7 +11,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecución desatendida
+# Priorizar variables de entorno para ejecuciÃ³n desatendida
 if ($env:GITEA_BOOTSTRAP_PAGEFILE_SIZE -and $env:GITEA_BOOTSTRAP_PAGEFILE_SIZE -ne '') {
   $Mode = 'Custom'
   $InitialMB = [int]$env:GITEA_BOOTSTRAP_PAGEFILE_SIZE
@@ -23,3 +29,7 @@ if ($Mode -eq 'Auto') {
   [void]$cs.Put()
   cmd /c "wmic pagefileset where name='$drive\\pagefile.sys' set InitialSize=$InitialMB,MaximumSize=$MaximumMB" | Out-Null
 }
+
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+

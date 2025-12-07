@@ -1,10 +1,16 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [switch]$Enable
 )
 
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecución desatendida
+# Priorizar variables de entorno para ejecuciÃ³n desatendida
 if ($env:GITEA_BOOTSTRAP_ENABLE_WINRM -and $env:GITEA_BOOTSTRAP_ENABLE_WINRM -eq 'true') {
   $Enable = $true
 }
@@ -24,15 +30,23 @@ try {
   $rule = Get-NetFirewallRule -DisplayName 'Windows Remote Management (HTTP-In)' -ErrorAction SilentlyContinue
   if ($null -ne $rule) {
     Enable-NetFirewallRule -InputObject $rule | Out-Null
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   else {
     New-NetFirewallRule -Name 'WINRM-HTTP-In-TCP' -DisplayName 'Windows Remote Management (HTTP-In)' -Direction Inbound -Action Allow -Protocol TCP -LocalPort 5985 | Out-Null
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
 
   exit 0
 }
 catch {
+  Write-ScriptLog -Type 'Error' -Message $_.Exception.Message
   Write-Error $_
   exit 1
 }
+  Write-Error $_
+  exit 1
+}
+
+
 

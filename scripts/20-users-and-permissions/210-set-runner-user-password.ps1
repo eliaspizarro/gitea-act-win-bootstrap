@@ -1,13 +1,19 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [string]$User = 'gitea-runner',
   [SecureString]$Password
 )
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecución desatendida
+# Priorizar variables de entorno para ejecuciÃ³n desatendida
 $User = if ($env:GITEA_BOOTSTRAP_USER) { $env:GITEA_BOOTSTRAP_USER } else { $User }
 
-# Si no se proporcionó password, usar variable de entorno automáticamente
+# Si no se proporcionÃ³ password, usar variable de entorno automÃ¡ticamente
 if (-not $Password) {
   $envPw = $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD
   if ($envPw) { 
@@ -23,3 +29,7 @@ if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
 $u = Get-LocalUser -Name $User -ErrorAction SilentlyContinue
 if ($null -eq $u) { throw "Usuario no existe: $User (ejecute 200-create-runner-user.ps1)" }
 Set-LocalUser -Name $User -Password $Password
+
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+

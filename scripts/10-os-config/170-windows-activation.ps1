@@ -1,10 +1,16 @@
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
 param(
   [switch]$CheckOnly,
   [SecureString]$ProductKey
 )
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecución desatendida
+# Priorizar variables de entorno para ejecuciÃ³n desatendida
 $CheckOnly = if ($env:GITEA_BOOTSTRAP_CHECK_ONLY -eq 'true') { $true } else { $CheckOnly }
 if ($env:GITEA_BOOTSTRAP_PRODUCT_KEY -and -not $ProductKey) {
   $ProductKey = ConvertTo-SecureString $env:GITEA_BOOTSTRAP_PRODUCT_KEY -AsPlainText -Force
@@ -24,7 +30,12 @@ if ($ProductKey) {
   try {
     cscript.exe //B //NoLogo $slmgr /ipk $key | Out-Null
     cscript.exe //B //NoLogo $slmgr /ato | Out-Null
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   } finally {
     if ($key) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($ProductKey)) | Out-Null }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
+
+

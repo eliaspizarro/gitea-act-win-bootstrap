@@ -1,5 +1,11 @@
-# Script de validación para ejecución desatendida del bootstrap de Gitea Act Runner
-# Verifica que todas las variables de entorno requeridas estén configuradas correctamente
+# Importar funciones de logging estandarizado
+. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
+
+# Script de validaciÃ³n para ejecuciÃ³n desatendida del bootstrap de Gitea Act Runner
+# Verifica que todas las variables de entorno requeridas estÃ©n configuradas correctamente
 
 param(
   [switch]$SkipOptional,
@@ -9,46 +15,46 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# Definición de variables requeridas y opcionales
+# DefiniciÃ³n de variables requeridas y opcionales
 $requiredVars = @(
   @{ Name = 'GITEA_SERVER_URL'; Description = 'URL completa del servidor Gitea'; Required = $true },
   @{ Name = 'GITEA_RUNNER_TOKEN'; Description = 'Token del runner generado en Gitea'; Required = $true },
-  @{ Name = 'RUNNER_NAME'; Description = 'Nombre único del runner'; Required = $true },
+  @{ Name = 'RUNNER_NAME'; Description = 'Nombre Ãºnico del runner'; Required = $true },
   @{ Name = 'GITEA_BOOTSTRAP_USER'; Description = 'Nombre de usuario local para el runner'; Required = $true },
-  @{ Name = 'GITEA_BOOTSTRAP_RUNNER_PASSWORD'; Description = 'Contraseña del usuario del runner'; Required = $true }
+  @{ Name = 'GITEA_BOOTSTRAP_RUNNER_PASSWORD'; Description = 'ContraseÃ±a del usuario del runner'; Required = $true }
 )
 
 $optionalVars = @(
   @{ Name = 'RUNNER_LABELS'; Description = 'Etiquetas del runner (default: windows,core,win2025)'; Required = $false },
   @{ Name = 'RUNNER_WORKDIR'; Description = 'Directorio de trabajo del runner'; Required = $false },
-  @{ Name = 'RUNNER_CONCURRENCY'; Description = 'Número de trabajos simultáneos (default: 1)'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CHECK_ONLY'; Description = 'Solo verificar activación Windows (true/false)'; Required = $false },
+  @{ Name = 'RUNNER_CONCURRENCY'; Description = 'NÃºmero de trabajos simultÃ¡neos (default: 1)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CHECK_ONLY'; Description = 'Solo verificar activaciÃ³n Windows (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PRODUCT_KEY'; Description = 'Clave de producto Windows'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_TIMEZONE'; Description = 'Zona horaria (default: UTC)'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_SYSTEM_LOCALE'; Description = 'Configuración regional del sistema'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_USER_LOCALE'; Description = 'Configuración regional del usuario'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_SYSTEM_LOCALE'; Description = 'ConfiguraciÃ³n regional del sistema'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_USER_LOCALE'; Description = 'ConfiguraciÃ³n regional del usuario'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_INPUT_LOCALE'; Description = 'Lista de idiomas de entrada'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_TEMP_DIR'; Description = 'Directorio temporal personalizado'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_TMP_DIR'; Description = 'Directorio TMP personalizado'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_SIZE'; Description = 'Tamaño del pagefile en MB'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_SIZE'; Description = 'TamaÃ±o del pagefile en MB'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_DRIVE'; Description = 'Unidad del pagefile (default: C:)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_INSTALL_DIR'; Description = 'Directorio base para herramientas'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CHOCO_CACHE_DIR'; Description = 'Directorio caché de Chocolatey'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CHOCO_CACHE_DIR'; Description = 'Directorio cachÃ© de Chocolatey'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_LOG_DIR'; Description = 'Directorio base para logs'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AV_EXCLUSIONS'; Description = 'Directorios a excluir del antivirus'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM'; Description = 'Permitir WinRM en firewall (true/false)'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_PATHS'; Description = 'Directorios para limpieza automática'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Días para limpieza automática'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Días para limpieza temporales'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_PATHS'; Description = 'Directorios para limpieza automÃ¡tica'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS'; Description = 'DÃ­as para limpieza automÃ¡tica'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS'; Description = 'DÃ­as para limpieza temporales'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR'; Description = 'Directorio para exportar estado'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS'; Description = 'Incluir diagnóstico en exportación (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS'; Description = 'Incluir diagnÃ³stico en exportaciÃ³n (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_ENABLE_WINRM'; Description = 'Habilitar WinRM (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_ENABLE_SSH'; Description = 'Habilitar servidor SSH (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_SSH_PORT'; Description = 'Puerto SSH (default: 22)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_SSH_FIREWALL'; Description = 'Permitir SSH en firewall (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE'; Description = 'Habilitar auto-logon (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_USER'; Description = 'Usuario para auto-logon'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD'; Description = 'Contraseña para auto-logon'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD'; Description = 'ContraseÃ±a para auto-logon'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_DOMAIN'; Description = 'Dominio para auto-logon'; Required = $false }
 )
 
@@ -84,23 +90,26 @@ function Test-EnvironmentVariable {
 function Test-Prerequisites {
   Write-Host "`n=== Verificando Prerrequisitos del Sistema ===" -ForegroundColor Cyan
   
-  # Verificar PowerShell versión
+  # Verificar PowerShell versiÃ³n
   $psVersion = $PSVersionTable.PSVersion.Major
-  Write-ValidationResult ($psVersion -ge 5) "PowerShell versión $psVersion (requerido: 5+)"
+  Write-ValidationResult ($psVersion -ge 5) "PowerShell versiÃ³n $psVersion (requerido: 5+)"
   
   # Verificar privilegios de administrador
   $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
   Write-ValidationResult $isAdmin "Privilegios de administrador"
   
-  # Verificar conexión a internet (opcional)
+  # Verificar conexiÃ³n a internet (opcional)
   try {
     Test-Connection -ComputerName 8.8.8.8 -Count 1 -Quiet | Out-Null
-    Write-ValidationResult $true "Conexión a internet disponible"
+    Write-ValidationResult $true "ConexiÃ³n a internet disponible"
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   } catch {
-    Write-Host "[INFO] No se pudo verificar conexión a internet" -ForegroundColor Yellow
+    Write-Host "[INFO] No se pudo verificar conexiÃ³n a internet" -ForegroundColor Yellow
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   
   return $isAdmin
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
 
 function Find-InteractiveScripts {
@@ -110,7 +119,7 @@ function Find-InteractiveScripts {
   
   $interactivePatterns = @(
     'Read-Host',
-    'param\([^)]*\$[^)]*\)[^;]*$',  # parámetros sin defaults
+    'param\([^)]*\$[^)]*\)[^;]*$',  # parÃ¡metros sin defaults
     'Write-Host.*"Enter',
     'Write-Host.*"Input',
     'Write-Host.*"Password',
@@ -130,20 +139,26 @@ function Find-InteractiveScripts {
         # Excluir scripts que ya tienen manejo de variables de entorno
         if ($content -match 'env:GITEA_BOOTSTRAP_' -or $content -match 'env:RUNNER_') {
           continue
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
         }
         $isInteractive = $true
         break
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
       }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
     }
     
     if ($isInteractive) {
       $interactiveScripts += $script.FullName.Replace($PSScriptRoot, '.')
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
     } else {
       $nonInteractiveScripts += $script.FullName.Replace($PSScriptRoot, '.')
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
     }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   
-  Write-Host "`nScripts que necesitan modificación (interactivos):" -ForegroundColor Yellow
+  Write-Host "`nScripts que necesitan modificaciÃ³n (interactivos):" -ForegroundColor Yellow
   $interactiveScripts | ForEach-Object { Write-Host "  - $_" }
   
   Write-Host "`nScripts ya compatibles (no interactivos):" -ForegroundColor Green
@@ -157,21 +172,26 @@ function Find-InteractiveScripts {
   return @{
     Interactive = $interactiveScripts
     NonInteractive = $nonInteractiveScripts
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
 
-# Ejecución principal
+# EjecuciÃ³n principal
 if ($ListRequired) {
   Write-Host "`n=== Variables de Entorno Requeridas ===" -ForegroundColor Cyan
   $requiredVars | ForEach-Object { 
     Write-Host "$($_.Name) - $($_.Description)" 
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   
   if (-not $SkipOptional) {
     Write-Host "`n=== Variables de Entorno Opcionales ===" -ForegroundColor Cyan
     $optionalVars | ForEach-Object { 
       Write-Host "$($_.Name) - $($_.Description)" 
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
     }
+  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   exit 0
 }
@@ -183,7 +203,7 @@ if ($AuditScripts) {
   exit 0
 }
 
-Write-Host "=== Validación de Variables de Entorno para Bootstrap Desatendido ===" -ForegroundColor Cyan
+Write-Host "=== ValidaciÃ³n de Variables de Entorno para Bootstrap Desatendido ===" -ForegroundColor Cyan
 Write-Host "Fecha: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
 
 # Verificar prerrequisitos
@@ -211,10 +231,10 @@ if (-not $SkipOptional) {
 }
 
 # Resumen final
-Write-Host "`n=== Resumen de Validación ===" -ForegroundColor Cyan
+Write-Host "`n=== Resumen de ValidaciÃ³n ===" -ForegroundColor Cyan
 if ($allRequiredOk) {
-  Write-ValidationResult $true "Todas las variables requeridas están configuradas"
-  Write-Host "`n[SUCCESS] El entorno está listo para ejecución desatendida del bootstrap" -ForegroundColor Green
+  Write-ValidationResult $true "Todas las variables requeridas estÃ¡n configuradas"
+  Write-Host "`n[SUCCESS] El entorno estÃ¡ listo para ejecuciÃ³n desatendida del bootstrap" -ForegroundColor Green
   exit 0
 } else {
   Write-ValidationResult $false "Faltan variables requeridas"
@@ -222,3 +242,5 @@ if ($allRequiredOk) {
   Write-Host "Ejecute: .\validate-env.ps1 -ListRequired para ver todas las variables necesarias" -ForegroundColor Yellow
   exit 1
 }
+
+
