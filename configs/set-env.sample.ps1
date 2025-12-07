@@ -26,7 +26,7 @@ $envVars = @{
   RUNNER_NAME = '${RUNNER_NAME}'                                           # Nombre único del runner (ej: win-server-01-prod, debe ser único en su organización)
   RUNNER_LABELS = 'windows,core,win2025'                                   # Etiquetas que determinan qué trabajos ejecuta este runner (ej: docker,build,deploy)
   RUNNER_WORKDIR = 'C:\Tools\gitea-act-runner\work'                        # Directorio donde se descargan y ejecutan los trabajos CI/CD
-  RUNNER_CONCURRENCY = '1'                                                 # Número de trabajos simultáneos (1-4 recomendado, depende de CPU/RAM)
+  RUNNER_CONCURRENCY = '2'                                                 # Número de trabajos simultáneos (1-4 recomendado, depende de CPU/RAM)
   
   # Activación de Windows Server 2025
   GITEA_BOOTSTRAP_CHECK_ONLY = 'false'                                     # 'true' para solo verificar estado de activación, 'false' para activar con la clave
@@ -36,6 +36,9 @@ $envVars = @{
   GITEA_BOOTSTRAP_USER = 'gitea-runner'                                    # Nombre de usuario local que ejecutará el servicio del runner
   GITEA_BOOTSTRAP_RUNNER_PASSWORD = '${RUNNER_PASSWORD}'                   # Contraseña segura: mínimo 12 caracteres, mayúsculas, minúsculas, números y símbolos
   GITEA_BOOTSTRAP_USER_GROUPS = 'Users,Performance Log Users'                  # Grupos a los que se agregará el usuario (separados por ,)
+# NOTA: Para instalar paquetes MSI/software dinámicamente (ej: setup-python@v5),
+# agregue ',Administrators' pero considere riesgos de seguridad.
+# Alternativa: Pre-instale herramientas durante bootstrap.
   
   # Configuración de carpetas de perfil de usuario
   GITEA_BOOTSTRAP_PROFILE_BASE_DIR = 'C:\CI'                               # Directorio base para perfiles de usuario (work, cache)
@@ -49,8 +52,8 @@ $envVars = @{
   GITEA_BOOTSTRAP_INPUT_LOCALE = ''                                        # Lista de idiomas de entrada (ej: 'es-ES', 'en-US') - vacío para mantener actual
   
   # Configuración de directorios temporales
-  GITEA_BOOTSTRAP_TEMP_DIR = 'D:\Temp'                                     # Directorio temporal personalizado (dejar vacío para usar defaults del sistema)
-  GITEA_BOOTSTRAP_TMP_DIR = 'D:\Temp'                                      # Directorio TMP personalizado (dejar vacío para usar defaults del sistema)
+  GITEA_BOOTSTRAP_TEMP_DIR = 'C:\Temp'                                     # Directorio temporal personalizado (dejar vacío para usar defaults del sistema)
+  GITEA_BOOTSTRAP_TMP_DIR = 'C:\Temp'                                      # Directorio TMP personalizado (dejar vacío para usar defaults del sistema)
   
   # Configuración de pagefile
   GITEA_BOOTSTRAP_PAGEFILE_SIZE = ''                                       # Tamaño del pagefile en MB (ej: '8192') - vacío para gestión automática
@@ -58,12 +61,12 @@ $envVars = @{
   
   # Configuración de instalación de herramientas
   GITEA_BOOTSTRAP_INSTALL_DIR = 'C:\Tools'                                 # Directorio base para instalación de herramientas
-  GITEA_BOOTSTRAP_CHOCO_CACHE_DIR = 'D:\ChocoCache'                        # Directorio caché de Chocolatey para optimizar descargas
+  GITEA_BOOTSTRAP_CHOCO_CACHE_DIR = 'C:\ChocoCache'                        # Directorio caché de Chocolatey para optimizar descargas
   GITEA_BOOTSTRAP_LOG_DIR = 'C:\Logs'                                      # Directorio base para logs de servicios y aplicaciones
   GITEA_BOOTSTRAP_DOTNET_CHANNEL = '8.0'                                   # Canal de .NET SDK a instalar (ej: 6.0, 7.0, 8.0)
   
   # Configuración de exclusiones de antivirus
-  GITEA_BOOTSTRAP_AV_EXCLUSIONS = 'C:\Tools;D:\Temp;C:\Tools\gitea-act-runner\work' # Directorios a excluir del antivirus (separados por ;)
+  GITEA_BOOTSTRAP_AV_EXCLUSIONS = 'C:\Tools;C:\Temp;C:\Tools\gitea-act-runner\work' # Directorios a excluir del antivirus (separados por ;)
   
   # Configuración de firewall
   GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM = 'false'                            # Permitir WinRM a través del firewall (true/false)
