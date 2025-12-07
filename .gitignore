@@ -1,6 +1,6 @@
 # Archivos de configuración con información sensible
-configs/set-env.ps1
-configs/act-runner.yaml
+configs/*
+!configs/*.sample.*
 
 # Logs y archivos temporales
 logs/
