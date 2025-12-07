@@ -45,62 +45,28 @@ GITEA_BOOTSTRAP_RUNNER_PASSWORD = 'ClaveSegura123!@#'
 **Opción A: Ejecución por grupo (recomendado)**
 ```powershell
 # Grupo 00: Bootstrap y validación
-.\scripts\00-bootstrap\000-set-execution-policy.ps1
-.\scripts\00-bootstrap\010-enable-powershell-logging.ps1
-.\scripts\00-bootstrap\020-create-log-folders.ps1
-.\scripts\00-bootstrap\030-enable-winrm-optional.ps1
-.\scripts\00-bootstrap\031-enable-ssh-optional.ps1
-.\scripts\00-bootstrap\040-validate-environment.ps1
+.\scripts\00-bootstrap\*.ps1
 
 # Grupo 10: Configuración del sistema operativo
-.\scripts\10-os-config\100-disable-hibernate-and-sleep.ps1
-.\scripts\10-os-config\110-set-power-plan-high-performance.ps1
-.\scripts\10-os-config\115-enable-long-paths.ps1
-.\scripts\10-os-config\120-set-timezone-and-locale.ps1
-.\scripts\10-os-config\130-config-temp-folders.ps1
-.\scripts\10-os-config\140-config-pagefile.ps1
-.\scripts\10-os-config\150-disable-unneeded-features.ps1
-.\scripts\10-os-config\160-config-auto-logon-optional.ps1
-.\scripts\10-os-config\170-windows-activation.ps1
+.\scripts\10-os-config\*.ps1
 
 # Grupo 20: Usuarios y permisos
-.\scripts\20-users-and-permissions\200-create-runner-user.ps1
-.\scripts\20-users-and-permissions\210-set-runner-user-password.ps1
-.\scripts\20-users-and-permissions\220-add-runner-user-to-groups.ps1
-.\scripts\20-users-and-permissions\230-config-user-profile-folders.ps1
-.\scripts\20-users-and-permissions\240-config-service-logon-rights.ps1
+.\scripts\20-users-and-permissions\*.ps1
 
 # Grupo 30: Hardening de seguridad
-.\scripts\30-security-hardening\300-apply-security-baseline.ps1
-.\scripts\30-security-hardening\310-config-firewall-for-ci.ps1
-.\scripts\30-security-hardening\320-disable-legacy-protocols.ps1
-.\scripts\30-security-hardening\330-config-av-exclusions.ps1
-.\scripts\30-security-hardening\340-disable-unneeded-services.ps1
+.\scripts\30-security-hardening\*.ps1
 
 # Grupo 40: Herramientas del sistema
-.\scripts\40-system-tools\400-install-chocolatey.ps1
-.\scripts\40-system-tools\410-install-7zip.ps1
-.\scripts\40-system-tools\420-install-dotnet-sdk.ps1
-.\scripts\40-system-tools\430-install-nodejs-v24.ps1
-.\scripts\40-system-tools\440-install-vs-buildtools.ps1
+.\scripts\40-system-tools\*.ps1
 
 # Grupo 50: Toolchain de compilación
-.\scripts\50-build-toolchain\500-install-nuget-cli.ps1
-.\scripts\50-build-toolchain\510-install-winsdk-10.0.26100.ps1
-.\scripts\50-build-toolchain\520-msiexec-logging-defaults.ps1
-.\scripts\50-build-toolchain\530-install-git.ps1
-.\scripts\50-build-toolchain\550-config-path-for-build-tools.ps1
+.\scripts\50-build-toolchain\*.ps1
 
 # Grupo 60: Gitea Act Runner
-.\scripts\60-gitea-act-runner\600-install-act-runner.ps1
-.\scripts\60-gitea-act-runner\610-create-start-script.ps1
-.\scripts\60-gitea-act-runner\620-register-act-schtask.ps1
-.\scripts\60-gitea-act-runner\630-config-act-runner-yaml.ps1
+.\scripts\60-gitea-act-runner\*.ps1
 
 # Grupo 70: Mantenimiento (opcional)
-.\scripts\70-maintenance\700-cleanup-build-artifacts.ps1
-.\scripts\70-maintenance\710-cleanup-windows-temp.ps1
-.\scripts\70-maintenance\720-optimize-disk-space.ps1
+.\scripts\70-maintenance\*.ps1
 ```
 
 **Opción B: Ejecución con PowerShell (automatizada)**
