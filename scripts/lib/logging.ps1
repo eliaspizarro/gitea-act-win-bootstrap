@@ -13,7 +13,7 @@ function Write-ScriptLog {
     )
     
     $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-    $scriptName = $MyInvocation.MyCommand.Name
+    $scriptName = $PSCmdlet.MyInvocation.MyCommand.Name
     
     switch ($Type) {
         'Start' {
