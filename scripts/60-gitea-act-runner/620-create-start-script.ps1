@@ -16,11 +16,8 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) {
 } else { 
   $InstallDir 
 }
-$LogDir = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { 
-  Join-Path $env:GITEA_BOOTSTRAP_LOG_DIR 'ActRunner' 
-} else { 
-  $LogDir 
-}
+$logBase = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } else { 'C:\Logs' }
+$LogDir = Join-Path $logBase 'ActRunner'
 
 if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $InstallDir" }
 if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
@@ -57,6 +54,13 @@ param(
 )
 
 `$ErrorActionPreference = 'Stop'
+
+# Verificar si act_runner ya está en ejecución para evitar múltiples instancias
+`$existingProcess = Get-Process -Name "act_runner" -ErrorAction SilentlyContinue
+if (`$existingProcess) {
+  Write-Log "act_runner ya está en ejecución (PID: {0}). Saliendo." -f `$existingProcess.Id
+  exit 0
+}
 
 # Función de logging
 function Write-Log {

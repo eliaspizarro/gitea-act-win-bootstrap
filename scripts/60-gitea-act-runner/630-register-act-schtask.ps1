@@ -34,17 +34,17 @@ $startScript = Join-Path $InstallDir 'start-act-runner.ps1'
 if (-not (Test-Path -LiteralPath $startScript)) { throw "No existe: $startScript (ejecute 620-create-start-script.ps1)" }
 
 $triggerType = if ($Trigger -eq 'Startup') { 'ONSTART' } else { 'ONLOGON' }
-$action = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$startScript`""
+$action = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File '$startScript'"
 
 # Si existe, eliminar para recrear limpio (solo schtasks)
-& schtasks /Query /TN $TaskName 2>&1 | Out-Null
+& C:\Windows\System32\schtasks.exe /Query /TN $TaskName 2>&1 | Out-Null
 if ($LASTEXITCODE -eq 0) {
-  & schtasks /Delete /TN $TaskName /F | Out-Null
+  & C:\Windows\System32\schtasks.exe /Delete /TN $TaskName /F | Out-Null
   Write-Host "Tarea existente '$TaskName' eliminada" -ForegroundColor Green
 }
 
 if ($RunAsSystem) {
-  & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU SYSTEM /F
+  & C:\Windows\System32\schtasks.exe /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU SYSTEM /F
   if ($LASTEXITCODE -ne 0) { 
     throw "Error al crear tarea programada (código: $LASTEXITCODE)"
   }
@@ -54,7 +54,7 @@ else {
   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
   try {
     $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-    & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU $User /RP $plain /F
+    & C:\Windows\System32\schtasks.exe /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU $User /RP $plain /F
     if ($LASTEXITCODE -ne 0) { 
       throw "Error al crear tarea programada (código: $LASTEXITCODE)"
     }

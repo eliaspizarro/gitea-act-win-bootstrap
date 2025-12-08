@@ -11,6 +11,16 @@ $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
+# Detener cualquier proceso act_runner existente
+try {
+  & taskkill /f /im act_runner.exe | Out-Null
+  Write-Host "Procesos act_runner.exe existentes detenidos." -ForegroundColor Yellow
+}
+catch {
+  # Ignorar si no hay procesos activos
+  Write-Host "No se encontraron procesos act_runner.exe activos." -ForegroundColor Gray
+}
+
 # Priorizar variables de entorno para ejecución desatendida
 $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
   Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
