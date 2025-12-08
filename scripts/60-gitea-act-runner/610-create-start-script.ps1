@@ -17,7 +17,8 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) {
 } else { 
   $InstallDir 
 }
-$LogDir = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } else { $LogDir }
+$logBase = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } else { $LogDir }
+$LogDir = Join-Path $logBase 'ActRunner'
 
 if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $InstallDir" }
 if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
@@ -45,19 +46,12 @@ function Write-Log {
   Add-Content -Path `$logFile -Value "`$timestamp - `$Message"
 }
 
-# 1. Ajustar PATH para incluir NodeJS si existe
-`$nodePath = 'C:\Program Files\nodejs'
-if (Test-Path -LiteralPath `$nodePath) {
-  `$env:PATH = "`$nodePath;" + `$env:PATH
-  Write-Log "NodeJS agregado al PATH: `$nodePath"
-}
-
-# 2. Cambiar al directorio del runner
+# Cambiar al directorio del runner
 Set-Location `$InstallDir
 Write-Log "Directorio de trabajo: `$InstallDir"
 `$exe = Join-Path `$InstallDir 'act_runner.exe'
 
-# 3. Bucle infinito: si el runner se cae, se vuelve a levantar con backoff exponencial
+# Bucle infinito: si el runner se cae, se vuelve a levantar con backoff exponencial
 `$restartCount = 0
 `$maxBackoffSeconds = 300  # Máximo 5 minutos de espera
 `$shouldExit = `$false
@@ -78,10 +72,15 @@ while (`$true) {
     Write-Log "Iniciando act_runner daemon (intento #`$(`$restartCount + 1))"
     Write-Log "Ejecutable: `$exe"
     Write-Log "Config: `$ConfigPath"
-    `$process = Start-Process -FilePath "`$exe" -ArgumentList @('daemon','--config',"`$ConfigPath") -WorkingDirectory "`$InstallDir" -WindowStyle Hidden -PassThru -Wait
+    `$outLog = Join-Path `$LogDir 'act-runner.stdout.log'
+    `$errLog = Join-Path `$LogDir 'act-runner.stderr.log'
+    Write-Log "Stdout log: `$outLog"
+    Write-Log "Stderr log: `$errLog"
+    `$process = Start-Process -FilePath "`$exe" -ArgumentList @('daemon','--config',"`$ConfigPath") -WorkingDirectory "`$InstallDir" -WindowStyle Hidden -RedirectStandardOutput "`$outLog" -RedirectStandardError "`$errLog" -PassThru -Wait
     
     if (`$process.ExitCode -ne 0) {
       Write-Log "act_runner terminó con código de salida: `$(`$process.ExitCode)"
+      Write-Log "Revisar logs: `$outLog y `$errLog"
     } else {
       Write-Log "act_runner terminó normalmente"
       `$restartCount = 0  # Resetear contador si terminó normalmente
