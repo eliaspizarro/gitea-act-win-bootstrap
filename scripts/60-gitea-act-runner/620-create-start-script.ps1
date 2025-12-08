@@ -21,6 +21,26 @@ $LogDir = Join-Path $logBase 'ActRunner'
 
 if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $InstallDir" }
 if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
+
+# Dar permisos al usuario del runner sobre el directorio de logs
+$runnerUser = if ($env:GITEA_BOOTSTRAP_USER) { $env:GITEA_BOOTSTRAP_USER } else { 'gitea-runner' }
+
+# Validar que el usuario del runner exista
+try {
+  $null = Get-LocalUser -Name $runnerUser -ErrorAction Stop
+}
+catch {
+  throw "El usuario '$runnerUser' no existe. Ejecute primero los scripts del grupo 20 (usuarios y permisos)."
+}
+
+try {
+  & icacls $LogDir /grant ("{0}:(OI)(CI)F" -f $runnerUser) | Out-Null
+  Write-Host "Permisos concedidos a $runnerUser sobre $LogDir" -ForegroundColor Green
+}
+catch {
+  $errorMsg = $_.Exception.Message
+  Write-Warning ('No se pudieron establecer permisos en {0}: {1}' -f $LogDir, $errorMsg)
+}
 $exe = Join-Path $InstallDir 'act_runner.exe'
 if (-not (Test-Path -LiteralPath $exe)) { throw 'act_runner.exe no encontrado. Ejecute 600-install-act-runner.ps1 antes.' }
 $startScript = Join-Path $InstallDir 'start-act-runner.ps1'
@@ -103,9 +123,3 @@ Set-Content -Path $startScript -Value $script -Encoding UTF8
 Write-Output $startScript
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
-
-
-
-
-
-

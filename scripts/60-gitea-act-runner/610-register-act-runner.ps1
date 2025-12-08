@@ -61,6 +61,16 @@ try {
     throw "Registro completado, pero no se encontró .runner en $InstallDir" 
   }
 
+  # Dar permisos al usuario del runner sobre el archivo .runner
+  $runnerUser = if ($env:GITEA_BOOTSTRAP_USER) { $env:GITEA_BOOTSTRAP_USER } else { 'gitea-runner' }
+  try {
+    & icacls $runnerFile /grant "${runnerUser}:(M)" | Out-Null
+    Write-Host "Permisos concedidos a $runnerUser sobre .runner" -ForegroundColor Green
+  }
+  catch {
+    Write-Warning "No se pudieron establecer permisos en .runner: $($_.Exception.Message)"
+  }
+
   Write-Host "Runner registrado correctamente." -ForegroundColor Green
 }
 catch {
