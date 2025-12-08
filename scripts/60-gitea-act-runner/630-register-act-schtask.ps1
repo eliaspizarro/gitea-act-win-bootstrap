@@ -1,7 +1,7 @@
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$TaskName = 'GiteaActRunner',
-  [SecureString]$Password
+  [string]$Password
 )
 
 # Importar funciones de logging estandarizado
@@ -17,8 +17,9 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR -and $env:GITEA_BOOTSTRAP_INS
 } else { 
   $InstallDir 
 }
+# Mantener contraseña como texto plano para Register-ScheduledTask
 if ($env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -and $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -ne '' -and -not $Password) {
-  $Password = ConvertTo-SecureString -String $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -AsPlainText -Force
+  $Password = $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD
 }
 
 # Construir LogDir consistentemente con script 620
