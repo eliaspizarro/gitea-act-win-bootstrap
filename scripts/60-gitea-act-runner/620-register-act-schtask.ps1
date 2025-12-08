@@ -15,7 +15,11 @@ Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
 # Priorizar variables de entorno para ejecución desatendida
-$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR -and $env:GITEA_BOOTSTRAP_INSTALL_DIR -ne '') { $env:GITEA_BOOTSTRAP_INSTALL_DIR } else { $InstallDir }
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR -and $env:GITEA_BOOTSTRAP_INSTALL_DIR -ne '') { 
+  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
+} else { 
+  $InstallDir 
+}
 if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') {
   $User = $env:GITEA_BOOTSTRAP_USER
 }

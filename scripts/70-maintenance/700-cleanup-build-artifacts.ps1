@@ -11,6 +11,14 @@ Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
 # Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner'
+} else { 
+  'C:\Tools\gitea-act-runner'
+}
+$Paths = @('C:\CI','C:\Logs',$InstallDir)
+
+# Priorizar variables de entorno para ejecución desatendida
 if ($env:GITEA_BOOTSTRAP_CLEANUP_PATHS -and $env:GITEA_BOOTSTRAP_CLEANUP_PATHS -ne '') {
   $Paths = $env:GITEA_BOOTSTRAP_CLEANUP_PATHS.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
 }

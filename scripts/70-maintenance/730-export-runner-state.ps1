@@ -21,11 +21,18 @@ $ts = Get-Date -Format 'yyyyMMdd_HHmmss'
 $stage = Join-Path $env:TEMP ("runner_state_" + $ts)
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
 
+# Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner'
+} else { 
+  'C:\Tools\gitea-act-runner'
+}
+
 # Recolectar archivos clave
 $items = @()
 $items += 'C:\Logs'
-$items += 'C:\Tools\gitea-act-runner\config.yaml'
-$items += 'C:\Tools\gitea-act-runner\start-act-runner.ps1'
+$items += (Join-Path $InstallDir 'config.yaml')
+$items += (Join-Path $InstallDir 'start-act-runner.ps1')
 $items += (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\REPO_TREE.txt' | Resolve-Path -ErrorAction SilentlyContinue)
 $items += (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\tree' | Resolve-Path -ErrorAction SilentlyContinue)
 $items += (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\configs' | Resolve-Path -ErrorAction SilentlyContinue)

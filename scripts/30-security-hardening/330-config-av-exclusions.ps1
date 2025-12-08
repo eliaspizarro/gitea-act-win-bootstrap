@@ -11,8 +11,18 @@ Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
 # Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  $env:GITEA_BOOTSTRAP_INSTALL_DIR
+} else { 
+  'C:\Tools'
+}
+$RunnerDir = Join-Path $InstallDir 'gitea-act-runner'
+
 if ($env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -and $env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -ne '') {
   $Paths = $env:GITEA_BOOTSTRAP_AV_EXCLUSIONS.Split(';') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+} else {
+  # Usar rutas dinámicas basadas en GITEA_BOOTSTRAP_INSTALL_DIR
+  $Paths = @('C:\CI',$InstallDir,'C:\Logs',$RunnerDir)
 }
 
 $hasDefender = Get-Command Add-MpPreference -ErrorAction SilentlyContinue

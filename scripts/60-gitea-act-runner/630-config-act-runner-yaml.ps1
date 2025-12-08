@@ -13,6 +13,13 @@ param(
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
+# Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
+} else { 
+  $InstallDir 
+}
+
 if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $InstallDir" }
 $cfg = if ($OutputPath) { $OutputPath } else { Join-Path $InstallDir 'config.yaml' }
 if (-not $RunnerName) { $RunnerName = $env:RUNNER_NAME }

@@ -53,6 +53,13 @@ foreach ($d in @($workDir,$cacheDir)) {
 }
 
 # Configurar permisos adicionales para herramientas de compilación e instalación de paquetes
+# Priorizar variables de entorno para ejecución desatendida
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  $env:GITEA_BOOTSTRAP_INSTALL_DIR
+} else { 
+  'C:\Tools'
+}
+
 $packageFolders = @(
   "$env:ProgramData\chocolatey",
   "$env:ProgramData\chocolatey\bin",
@@ -62,7 +69,7 @@ $packageFolders = @(
   "$env:LOCALAPPDATA\NuGet\plugins",
   "$env:APPDATA\npm",
   "$env:APPDATA\npm-cache",
-  "C:\tools",
+  $InstallDir,
   "C:\build"
 )
 
