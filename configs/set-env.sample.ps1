@@ -64,6 +64,7 @@ $envVars = @{
   GITEA_BOOTSTRAP_CHOCO_CACHE_DIR = 'C:\ChocoCache'                        # Directorio caché de Chocolatey para optimizar descargas
   GITEA_BOOTSTRAP_LOG_DIR = 'C:\Logs'                                      # Directorio base para logs de servicios y aplicaciones
   GITEA_BOOTSTRAP_DOTNET_CHANNEL = '8.0'                                   # Canal de .NET SDK a instalar (ej: 6.0, 7.0, 8.0)
+  GITEA_BOOTSTRAP_WINSDK_VERSION = '10.0.26100.6901'                       # Versión específica del Windows SDK a instalar vía NuGet
   
   # Configuración de exclusiones de antivirus
   GITEA_BOOTSTRAP_AV_EXCLUSIONS = 'C:\Tools;C:\Temp;C:\Tools\gitea-act-runner\work' # Directorios a excluir del antivirus (separados por ;)

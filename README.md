@@ -4,7 +4,7 @@
 [![PowerShell](https://img.shields.io/badge/Shell-PowerShell-blue.svg)](https://docs.microsoft.com/powershell/)
 [![Windows](https://img.shields.io/badge/Platform-Windows%20Server%20205%20%7C%20Windows%2010%2F11-lightgrey.svg)]()
 
-Bootstrap automatizado y **100% desatendido** para Gitea `act_runner` en Windows Server 2025 / Windows 10/11 usando PowerShell y Chocolatey.
+Bootstrap automatizado y **100% desatendido** para Gitea `act_runner` en Windows Server 2025 / Windows 10/11 usando PowerShell, Chocolatey y NuGet.
 
 ## ✅ Características Principales
 
@@ -163,8 +163,11 @@ gitea-act-win-bootstrap/
 ### Opcionales Populares
 - `GITEA_BOOTSTRAP_TIMEZONE`: Zona horaria (default: UTC)
 - `GITEA_BOOTSTRAP_INSTALL_DIR`: Directorio de herramientas (default: C:\Tools)
+- `GITEA_BOOTSTRAP_WINSDK_VERSION`: Versión específica del Windows SDK (default: 10.0.26100.6901)
 - `GITEA_BOOTSTRAP_PRODUCT_KEY`: Clave de activación Windows
 - `GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM`: Permitir WinRM (default: false)
+
+**Nota**: El Windows SDK se instala vía NuGet para mayor precisión de versiones. [Ver versiones disponibles](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)
 
 [📖 Ver todas las variables](docs/ENVIRONMENT_VARIABLES.md)
 

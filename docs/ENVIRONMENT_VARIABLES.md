@@ -58,6 +58,7 @@ Todos los scripts soportan ejecución desatendida usando variables de entorno. L
 | `GITEA_BOOTSTRAP_CHOCO_CACHE_DIR` | Directorio caché de Chocolatey | `D:\ChocoCache` | `400-install-chocolatey.ps1` |
 | `GITEA_BOOTSTRAP_LOG_DIR` | Directorio base para logs | `C:\Logs` | `610-create-start-script.ps1` |
 | `GITEA_BOOTSTRAP_DOTNET_CHANNEL` | Canal de .NET SDK | `8.0` | `420-install-dotnet-sdk.ps1` |
+| `GITEA_BOOTSTRAP_WINSDK_VERSION` | Versión específica del Windows SDK (NuGet) | `10.0.26100.6901` | `510-install-winsdk.ps1` |
 
 ### Perfiles de Usuario
 | Variable | Propósito | Default | Scripts que usan |
@@ -157,9 +158,10 @@ Los siguientes scripts han sido estandarizados para variables de entorno (21 tot
 - `310-config-firewall-for-ci.ps1`
 - `330-config-av-exclusions.ps1`
 
-### Herramientas (4)
+### Herramientas (5)
 - `400-install-chocolatey.ps1`
 - `420-install-dotnet-sdk.ps1`
+- `510-install-winsdk.ps1`
 - `600-install-act-runner.ps1`
 - `610-create-start-script.ps1`
 
