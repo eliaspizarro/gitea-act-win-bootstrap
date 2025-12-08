@@ -31,25 +31,16 @@ $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIde
 if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
 
 $startScript = Join-Path $InstallDir 'start-act-runner.ps1'
-if (-not (Test-Path -LiteralPath $startScript)) { throw "No existe: $startScript (ejecute 610-create-start-script.ps1)" }
+if (-not (Test-Path -LiteralPath $startScript)) { throw "No existe: $startScript (ejecute 620-create-start-script.ps1)" }
 
 $triggerType = if ($Trigger -eq 'Startup') { 'ONSTART' } else { 'ONLOGON' }
 $action = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$startScript`""
 
-# Si existe, eliminar para recrear limpio
-try {
-  $exists = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-  if ($exists) {
-    Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
-    Write-Host "Tarea existente '$TaskName' eliminada" -ForegroundColor Green
-  }
-} catch {
-  # Fallback a schtasks si Get-ScheduledTask no está disponible
-  & schtasks /Query /TN $TaskName 2>&1 | Out-Null
-  if ($LASTEXITCODE -eq 0) {
-    & schtasks /Delete /TN $TaskName /F | Out-Null
-    Write-Host "Tarea existente '$TaskName' eliminada (método legacy)" -ForegroundColor Green
-  }
+# Si existe, eliminar para recrear limpio (solo schtasks)
+& schtasks /Query /TN $TaskName 2>&1 | Out-Null
+if ($LASTEXITCODE -eq 0) {
+  & schtasks /Delete /TN $TaskName /F | Out-Null
+  Write-Host "Tarea existente '$TaskName' eliminada" -ForegroundColor Green
 }
 
 if ($RunAsSystem) {

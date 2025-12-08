@@ -121,7 +121,6 @@ Get-ScheduledTask -TaskName "GiteaActRunner"
 
 | Documento | Descripción |
 |-----------|-------------|
-| [📖 Variables de Entorno](docs/ENVIRONMENT_VARIABLES.md) | Referencia completa de 30+ variables |
 | [📋 Overview](docs/overview.md) | Arquitectura y flujo detallado |
 | [🔧 Activación](docs/activation-and-limitations.md) | Activación Windows desatendida |
 | [🐛 Troubleshooting](docs/troubleshooting.md) | Problemas comunes y soluciones |
@@ -129,7 +128,7 @@ Get-ScheduledTask -TaskName "GiteaActRunner"
 
 ### 🔗 Enlaces Rápidos
 - [📁 Repositorio en GitHub](https://github.com/eliaspizarro/gitea-act-win-bootstrap)
-- [⚙️ Configuración del Runner](docs/ENVIRONMENT_VARIABLES.md#gitea-runner-configuration)
+- [⚙️ Configuración del Runner](configs/set-env.sample.ps1)
 - [🔒 Guía de Seguridad](docs/hardening-checklist.md)
 - [❓ Preguntas Frecuentes](docs/troubleshooting.md)
 
@@ -170,7 +169,7 @@ gitea-act-win-bootstrap/
 
 **Nota**: El Windows SDK se instala vía NuGet para mayor precisión de versiones. [Ver versiones disponibles](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)
 
-[📖 Ver todas las variables](docs/ENVIRONMENT_VARIABLES.md)
+[📖 Ver configuración completa en configs/set-env.sample.ps1](configs/set-env.sample.ps1)
 
 ## 🚀 Flujo de Ejecución
 

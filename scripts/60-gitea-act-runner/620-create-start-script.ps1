@@ -1,6 +1,5 @@
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
-  [string]$ConfigPath,
   [string]$LogDir = 'C:\Logs\ActRunner'
 )
 
@@ -24,7 +23,6 @@ if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $I
 if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
 $exe = Join-Path $InstallDir 'act_runner.exe'
 if (-not (Test-Path -LiteralPath $exe)) { throw 'act_runner.exe no encontrado. Ejecute 600-install-act-runner.ps1 antes.' }
-$cfg = if ($ConfigPath) { $ConfigPath } else { Join-Path $InstallDir 'config.yaml' }
 $startScript = Join-Path $InstallDir 'start-act-runner.ps1'
 $script = @"
 # Script de inicio para Gitea Act Runner
@@ -32,7 +30,6 @@ $script = @"
 
 param(
   [string]`$InstallDir = '$InstallDir',
-  [string]`$ConfigPath = '$cfg',
   [string]`$LogDir = '$LogDir'
 )
 
@@ -71,12 +68,11 @@ while (`$true) {
   try {
     Write-Log "Iniciando act_runner daemon (intento #`$(`$restartCount + 1))"
     Write-Log "Ejecutable: `$exe"
-    Write-Log "Config: `$ConfigPath"
     `$outLog = Join-Path `$LogDir 'act-runner.stdout.log'
     `$errLog = Join-Path `$LogDir 'act-runner.stderr.log'
     Write-Log "Stdout log: `$outLog"
     Write-Log "Stderr log: `$errLog"
-    `$process = Start-Process -FilePath "`$exe" -ArgumentList @('daemon','--config',"`$ConfigPath") -WorkingDirectory "`$InstallDir" -WindowStyle Hidden -RedirectStandardOutput "`$outLog" -RedirectStandardError "`$errLog" -PassThru -Wait
+    `$process = Start-Process -FilePath "`$exe" -ArgumentList @('daemon') -WorkingDirectory "`$InstallDir" -WindowStyle Hidden -RedirectStandardOutput "`$outLog" -RedirectStandardError "`$errLog" -PassThru -Wait
     
     if (`$process.ExitCode -ne 0) {
       Write-Log "act_runner terminó con código de salida: `$(`$process.ExitCode)"
