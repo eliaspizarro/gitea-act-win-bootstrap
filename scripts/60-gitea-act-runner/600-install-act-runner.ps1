@@ -1,5 +1,5 @@
 param(
-  [string]$ActRunnerInstallDir = 'C:\Tools\gitea-act-runner',
+  [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$ActRunnerVersion,
   [string]$DownloadAssetUrl
 )
@@ -12,10 +12,10 @@ Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
 # Priorizar variables de entorno para ejecución desatendida
-$ActRunnerInstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
   Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
 } else { 
-  $ActRunnerInstallDir 
+  $InstallDir 
 }
 
 $ActRunnerVersion = if ($env:GITEA_BOOTSTRAP_ACT_RUNNER_VERSION) { 
@@ -24,7 +24,7 @@ $ActRunnerVersion = if ($env:GITEA_BOOTSTRAP_ACT_RUNNER_VERSION) {
   $ActRunnerVersion 
 }
 
-if (-not (Test-Path -LiteralPath $ActRunnerInstallDir)) { New-Item -ItemType Directory -Path $ActRunnerInstallDir -Force | Out-Null }
+if (-not (Test-Path -LiteralPath $InstallDir)) { New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null }
 
 # Dar permisos al usuario del runner sobre el directorio de instalación
 $runnerUser = if ($env:GITEA_BOOTSTRAP_USER) { $env:GITEA_BOOTSTRAP_USER } else { 'gitea-runner' }
@@ -52,8 +52,8 @@ function Grant-RunnerPermissions {
   }
 }
 
-Grant-RunnerPermissions -DirectoryPath $ActRunnerInstallDir -UserName $runnerUser
-$actRunnerExePath = Join-Path $ActRunnerInstallDir 'act_runner.exe'
+Grant-RunnerPermissions -DirectoryPath $InstallDir -UserName $runnerUser
+$actRunnerExePath = Join-Path $InstallDir 'act_runner.exe'
 if (Test-Path -LiteralPath $actRunnerExePath) { 
   Write-Host 'Gitea Act Runner ya está instalado. Omitiendo instalación.' -ForegroundColor Yellow
   return 
@@ -85,8 +85,8 @@ finally {
   }
 }
 $machinePath = [Environment]::GetEnvironmentVariable('Path','Machine')
-if (-not ($machinePath.Split(';') -contains $ActRunnerInstallDir)) {
-  [Environment]::SetEnvironmentVariable('Path', ($machinePath.TrimEnd(';') + ';' + $ActRunnerInstallDir), 'Machine')
+if (-not ($machinePath.Split(';') -contains $InstallDir)) {
+  [Environment]::SetEnvironmentVariable('Path', ($machinePath.TrimEnd(';') + ';' + $InstallDir), 'Machine')
   Write-Host 'Directorio de Gitea Act Runner agregado al PATH del sistema.' -ForegroundColor Green
 }
 
