@@ -16,8 +16,11 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) {
 } else { 
   $InstallDir 
 }
-$logBase = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } else { $LogDir }
-$LogDir = Join-Path $logBase 'ActRunner'
+$LogDir = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { 
+  Join-Path $env:GITEA_BOOTSTRAP_LOG_DIR 'ActRunner' 
+} else { 
+  $LogDir 
+}
 
 if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $InstallDir" }
 if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
