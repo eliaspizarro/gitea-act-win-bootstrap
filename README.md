@@ -117,6 +117,21 @@ Get-ChildItem -Path "scripts" -Recurse -Filter "*.ps1" |
 Get-ScheduledTask -TaskName "GiteaActRunner"
 ```
 
+### 5. Administrar Tarea del Runner
+```powershell
+# Iniciar la tarea del runner
+Start-ScheduledTask -TaskName "GiteaActRunner"
+
+# Detener la tarea del runner (antes de reiniciar el servidor)
+Stop-ScheduledTask -TaskName "GiteaActRunner"
+
+# Ver estado de la tarea
+Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object State, LastRunTime
+
+# Ver logs del runner
+Get-Content -Tail 50 C:\Logs\ActRunner\act-runner.stderr.log
+```
+
 ## 📋 Documentación
 
 | Documento | Descripción |

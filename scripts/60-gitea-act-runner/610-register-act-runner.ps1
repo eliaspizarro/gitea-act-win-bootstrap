@@ -39,6 +39,9 @@ if (Test-Path -LiteralPath $runnerFile) {
   exit 0 
 }
 
+# Cambiar al directorio del runner antes de registrar
+Set-Location $InstallDir
+
 # Resolver valores opcionales desde variables de entorno
 if (-not $RunnerName) { $RunnerName = $env:RUNNER_NAME }
 if (-not $Labels) { $Labels = $env:RUNNER_LABELS }
@@ -48,7 +51,6 @@ try {
   $regArgs = @('register','--no-interactive','--instance', $serverUrl, '--token', $serverToken)
   if ($RunnerName) { $regArgs += @('--name', $RunnerName) }
   if ($Labels) { $regArgs += @('--labels', $Labels) }
-  if ($WorkDir) { $regArgs += @('--workdir', $WorkDir) }
   & $exe @regArgs
 
   if ($LASTEXITCODE -ne 0) { 
