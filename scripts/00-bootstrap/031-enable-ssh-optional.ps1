@@ -153,8 +153,8 @@ try {
     Write-Host "Regla firewall: $($firewallRule.Enabled)" -ForegroundColor Green
   }
   
-  Write-Host "`nâœ… SSH Server habilitado correctamente" -ForegroundColor Green
-  Write-Host "Puede conectarse usando: ssh <usuario>@<hostname> -p $Port" -ForegroundColor Cyan
+  Write-Host "`nSSH Server habilitado correctamente" -ForegroundColor Green
+  Write-Host "Puede conectarse usando: ssh usuario@hostname -p $Port" -ForegroundColor Cyan
   
 } catch {
   Write-Warning "No se pudo verificar el estado final: $_"
