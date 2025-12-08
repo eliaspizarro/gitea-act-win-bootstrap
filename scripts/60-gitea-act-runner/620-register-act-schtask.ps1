@@ -37,8 +37,20 @@ $triggerArg = if ($Trigger -eq 'Startup') { '/SC ONSTART' } else { '/SC ONLOGON'
 $action = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$startScript`""
 
 # Si existe, eliminar para recrear limpio
-$exists = (& schtasks /Query /TN $TaskName 2>$null) | Out-Null; $exists = ($LASTEXITCODE -eq 0)
-if ($exists) { & schtasks /Delete /TN $TaskName /F | Out-Null }
+try {
+  $exists = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+  if ($exists) {
+    Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
+    Write-Host "Tarea existente '$TaskName' eliminada" -ForegroundColor Green
+  }
+} catch {
+  # Fallback a schtasks si Get-ScheduledTask no está disponible
+  & schtasks /Query /TN $TaskName 2>&1 | Out-Null
+  if ($LASTEXITCODE -eq 0) {
+    & schtasks /Delete /TN $TaskName /F | Out-Null
+    Write-Host "Tarea existente '$TaskName' eliminada (método legacy)" -ForegroundColor Green
+  }
+}
 
 if ($RunAsSystem) {
   & schtasks /Create /TN $TaskName /TR $action $triggerArg /RL HIGHEST /RU SYSTEM /F /DU INFINITE /K /V1 | Out-Null
