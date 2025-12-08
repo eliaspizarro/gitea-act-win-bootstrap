@@ -113,8 +113,8 @@ Get-ChildItem -Path "scripts" -Recurse -Filter "*.ps1" |
 
 ### 4. Verificar Runner
 ```powershell
-# El runner debería estar registrado y funcionando como tarea programada
-Get-ScheduledTask -TaskName "GiteaActRunner"
+# Verificar que la tarea programada existe y está configurada
+Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object TaskName, State, Actions
 ```
 
 ### 5. Administrar Tarea del Runner
