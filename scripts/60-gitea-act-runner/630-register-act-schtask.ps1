@@ -67,16 +67,12 @@ foreach ($dir in $requiredDirs) {
   }
 }
 
-Write-Host "✓ Permisos validados para el usuario '$taskUser'" -ForegroundColor Green
+Write-Host "Permisos validados para el usuario '$taskUser'" -ForegroundColor Green
 
 # Construir acción para PowerShell Scheduled Task
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$startScript`""
-$trigger = if ($Trigger -eq 'Startup') { 
-  New-ScheduledTaskTrigger -AtStartup 
-} else { 
-  New-ScheduledTaskTrigger -AtLogon 
-}
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -DontStopOnIdleEnd -ExecutionTimeLimit (New-TimeSpan -Days 3650)
+$trigger = New-ScheduledTaskTrigger -AtStartup
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit (New-TimeSpan -Days 3650)
 
 # Si existe, eliminar para recrear limpio
 try {
@@ -89,8 +85,7 @@ catch {
 
 # Crear tarea con el usuario determinado
 if (-not $Password) {
-  # Solicitar contraseña si no se proporcionó
-  $Password = Read-Host "Ingrese contraseña para usuario '$taskUser'" -AsSecureString
+  throw "Debe proporcionar la contraseña del usuario '$taskUser' mediante el parametro -Password o la variable de entorno GITEA_BOOTSTRAP_RUNNER_PASSWORD."
 }
 
 Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -User $taskUser -Password $Password -RunLevel Highest | Out-Null

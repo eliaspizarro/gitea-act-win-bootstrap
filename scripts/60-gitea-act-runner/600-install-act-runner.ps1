@@ -11,14 +11,28 @@ $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Detener cualquier proceso act_runner existente
-try {
-  & taskkill /f /im act_runner.exe | Out-Null
-  Write-Host "Procesos act_runner.exe existentes detenidos." -ForegroundColor Yellow
+# Detener cualquier proceso act_runner existente (necesario para instalación limpia)
+$existingProcess = Get-Process -Name "act_runner" -ErrorAction SilentlyContinue
+if ($existingProcess) {
+  $existingProcess | Stop-Process -Force
+  Write-Host "Proceso act_runner.exe detenido." -ForegroundColor Yellow
 }
-catch {
-  # Ignorar si no hay procesos activos
-  Write-Host "No se encontraron procesos act_runner.exe activos." -ForegroundColor Gray
+
+# Limpieza de procesos zombie PowerShell que ejecutan start-act-runner.ps1
+$zombieProcesses = Get-Process powershell -ErrorAction SilentlyContinue | ForEach-Object {
+  $cmdLine = (Get-WmiObject Win32_Process -Filter "ProcessId=$($_.Id)").CommandLine
+  if ($cmdLine -and $cmdLine -like "*start-act-runner*") {
+    $_
+  }
+}
+
+if ($zombieProcesses) {
+  Write-Host "Detectados $($zombieProcesses.Count) procesos zombie PowerShell ejecutando start-act-runner.ps1" -ForegroundColor Yellow
+  $zombieProcesses | ForEach-Object {
+    Write-Host "Deteniendo proceso PID $($_.Id) iniciado el $($_.StartTime)" -ForegroundColor Yellow
+    Stop-Process -Id $_.Id -Force
+  }
+  Write-Host "Procesos zombie eliminados." -ForegroundColor Green
 }
 
 # Priorizar variables de entorno para ejecución desatendida

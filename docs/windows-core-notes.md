@@ -31,9 +31,11 @@ Entorno sin GUI; todo es headless/CLI.
 - Habilitar: `scripts/10-os-config/115-enable-long-paths.ps1`.
 - PATH herramientas: `scripts/50-build-toolchain/550-config-path-for-build-tools.ps1`.
 
-## YAML del runner
+## Configuración del runner
 1) Ejecuta `configs/set-env.sample.ps1`.
-2) Genera YAML: `scripts/60-gitea-act-runner/630-config-act-runner-yaml.ps1`.
+2) Registra runner: `scripts/60-gitea-act-runner/610-register-act-runner.ps1`.
+3) Genera script de inicio: `scripts/60-gitea-act-runner/620-create-start-script.ps1`.
+4) Crea tarea programada: `scripts/60-gitea-act-runner/630-register-act-schtask.ps1`.
 
 ## Verificación rápida
 - `choco --version`, `dotnet --info`, `node -v`, `git --version`.

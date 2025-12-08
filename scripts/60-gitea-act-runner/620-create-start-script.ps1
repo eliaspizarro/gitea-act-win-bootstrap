@@ -20,7 +20,16 @@ $logBase = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } el
 $LogDir = Join-Path $logBase 'ActRunner'
 
 if (-not (Test-Path -LiteralPath $InstallDir)) { throw "InstallDir no existe: $InstallDir" }
-if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
+if (-not (Test-Path -LiteralPath $LogDir)) { 
+  Write-Host "Creando directorio de logs: $LogDir" -ForegroundColor Yellow
+  New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
+}
+
+# Verificación explícita de que la carpeta existe
+if (-not (Test-Path -LiteralPath $LogDir -PathType Container)) {
+  throw "No se pudo crear el directorio de logs: $LogDir"
+}
+Write-Host "Directorio de logs verificado: $LogDir" -ForegroundColor Green
 
 # Dar permisos al usuario del runner sobre el directorio de logs
 $runnerUser = if ($env:GITEA_BOOTSTRAP_USER) { $env:GITEA_BOOTSTRAP_USER } else { 'gitea-runner' }
@@ -44,91 +53,17 @@ catch {
 $exe = Join-Path $InstallDir 'act_runner.exe'
 if (-not (Test-Path -LiteralPath $exe)) { throw 'act_runner.exe no encontrado. Ejecute 600-install-act-runner.ps1 antes.' }
 $startScript = Join-Path $InstallDir 'start-act-runner.ps1'
-$script = @"
-# Script de inicio para Gitea Act Runner
-# Arranca act_runner como daemon con auto-reinicio y logging
+$templatePath = Join-Path $PSScriptRoot '..\..\templates\60-gitea-act-runner\start-act-runner.ps1.template'
 
-param(
-  [string]`$InstallDir = '$InstallDir',
-  [string]`$LogDirBase = if (`$env:GITEA_BOOTSTRAP_LOG_DIR) { `$env:GITEA_BOOTSTRAP_LOG_DIR } else { 'C:\Logs' }
-)
-
-# Construir siempre la ruta correcta para ActRunner
-`$LogDir = Join-Path `$LogDirBase 'ActRunner'
-
-`$ErrorActionPreference = 'Stop'
-
-# Verificar si act_runner ya está en ejecución para evitar múltiples instancias
-`$existingProcess = Get-Process -Name "act_runner" -ErrorAction SilentlyContinue
-if (`$existingProcess) {
-  Write-Log "act_runner ya está en ejecución (PID: {0}). Saliendo." -f `$existingProcess.Id
-  exit 0
+# Validar que el template exista
+if (-not (Test-Path -LiteralPath $templatePath)) {
+  throw "Template no encontrado: $templatePath"
 }
 
-# Función de logging
-function Write-Log {
-  param([string]`$Message)
-  `$timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-  `$logFile = Join-Path `$LogDir 'runner-startup.log'
-  Add-Content -Path `$logFile -Value "`$timestamp - `$Message"
-}
-
-# Cambiar al directorio del runner
-Set-Location `$InstallDir
-Write-Log "Directorio de trabajo: `$InstallDir"
-`$exe = Join-Path `$InstallDir 'act_runner.exe'
-
-# Bucle infinito: si el runner se cae, se vuelve a levantar con backoff exponencial
-`$restartCount = 0
-`$maxBackoffSeconds = 300  # Máximo 5 minutos de espera
-`$shouldExit = `$false
-
-# Manejo graceful shutdown
-trap {
-  Write-Log "Recibida señal de terminación. Deteniendo graceful shutdown..."
-  `$shouldExit = `$true
-}
-
-while (`$true) {
-  if (`$shouldExit) {
-    Write-Log "Saliendo graceful shutdown"
-    break
-  }
-  
-  try {
-    Write-Log "Iniciando act_runner daemon (intento #`$(`$restartCount + 1))"
-    Write-Log "Ejecutable: `$exe"
-    `$outLog = Join-Path `$LogDir 'act-runner.stdout.log'
-    `$errLog = Join-Path `$LogDir 'act-runner.stderr.log'
-    Write-Log "Stdout log: `$outLog"
-    Write-Log "Stderr log: `$errLog"
-    `$process = Start-Process -FilePath "`$exe" -ArgumentList @('daemon') -WorkingDirectory "`$InstallDir" -WindowStyle Hidden -RedirectStandardOutput "`$outLog" -RedirectStandardError "`$errLog" -PassThru -Wait
-    
-    if (`$process.ExitCode -ne 0) {
-      Write-Log "act_runner terminó con código de salida: `$(`$process.ExitCode)"
-      Write-Log "Revisar logs: `$outLog y `$errLog"
-    } else {
-      Write-Log "act_runner terminó normalmente"
-      `$restartCount = 0  # Resetear contador si terminó normalmente
-    }
-  }
-  catch {
-    Write-Log ("ERROR al iniciar act_runner: {0}" -f `$_.Exception.Message)
-    if (`$_.ScriptStackTrace) { Write-Log ("TRACE: {0}" -f `$_.ScriptStackTrace) }
-    if (`$_.InvocationInfo -and `$_.InvocationInfo.PositionMessage) { Write-Log ("AT: {0}" -f `$_.InvocationInfo.PositionMessage) }
-  }
-  
-  if (`$shouldExit) {
-    break
-  }
-  
-  `$restartCount++
-  # Backoff exponencial: 5s, 10s, 20s, 40s, 80s, 160s, 300s (máximo)
-  `$waitSeconds = [Math]::Min(5 * [Math]::Pow(2, (`$restartCount - 1)), `$maxBackoffSeconds)
-  Write-Log "Esperando `$waitSeconds segundos antes de reiniciar..."
-  Start-Sleep -Seconds `$waitSeconds
-}
-"@
+# Leer template y reemplazar placeholders
+$script = Get-Content -Path $templatePath -Raw
+$script = $script -Replace '__INSTALL_DIR__', $InstallDir
+$script = $script -Replace '__LOG_DIR__', 'C:\Logs\ActRunner'
 Set-Content -Path $startScript -Value $script -Encoding UTF8 -Force
 Write-Output $startScript
 

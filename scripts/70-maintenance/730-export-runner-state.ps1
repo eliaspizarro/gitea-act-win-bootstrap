@@ -31,8 +31,8 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) {
 # Recolectar archivos clave
 $items = @()
 $items += 'C:\Logs'
-$items += (Join-Path $InstallDir 'config.yaml')
 $items += (Join-Path $InstallDir 'start-act-runner.ps1')
+$items += (Join-Path $InstallDir '.runner')
 $items += (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\REPO_TREE.txt' | Resolve-Path -ErrorAction SilentlyContinue)
 $items += (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\tree' | Resolve-Path -ErrorAction SilentlyContinue)
 $items += (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\configs' | Resolve-Path -ErrorAction SilentlyContinue)

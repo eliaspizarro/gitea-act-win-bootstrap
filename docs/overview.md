@@ -11,7 +11,7 @@ Este repositorio automatiza el bootstrap de un runner de Gitea `act_runner` en W
 ## Objetivos
 - Preparar el sistema para CI (energía, hibernación, rutas largas, timezone, pagefile, temp, features).
 - Instalar toolchain de build (Chocolatey, 7-Zip CLI, .NET SDK LTS, Node.js v24, Git, VS Build Tools, Windows SDK).
-- Instalar y configurar `act_runner` con YAML generado desde variables de entorno.
+- Instalar y configurar `act_runner` con registro automático y script de inicio.
 - Registrar inicio automático mediante Tarea Programada.
 - **Proporcionar ejecución 100% desatendida**
 
@@ -37,7 +37,7 @@ Este repositorio automatiza el bootstrap de un runner de Gitea `act_runner` en W
 2) **Validar**: Ejecutar script de validación para verificar configuración
 3) **Bootstrap y config**: Ejecutar scripts del sistema sin parámetros interactivos
 4) **Instalar herramientas**: Instalación vía Chocolatey completamente desatendida
-5) **Configurar runner**: Generar YAML y registrar tarea automáticamente
+5) **Configurar runner**: Registrar runner y crear tarea programada automáticamente
 
 ## Variables de entorno
 

@@ -1,0 +1,84 @@
+# Script de inicio para Gitea Act Runner
+# Arranca act_runner como daemon con auto-reinicio y logging
+
+param(
+  [string]$InstallDir = '__INSTALL_DIR__'
+)
+
+# Construir siempre la ruta correcta para ActRunner
+$LogDir = '__LOG_DIR__'
+
+# Asegurar que el directorio de logs exista antes de escribir
+if (-not (Test-Path -Path $LogDir -PathType Container)) {
+  New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
+}
+
+$ErrorActionPreference = 'Stop'
+
+# Funcion de logging (definida antes de cualquier llamada)
+function Write-Log {
+  param([string]$Message)
+  $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+  $logFile = Join-Path $LogDir 'runner-startup.log'
+  Add-Content -Path $logFile -Value "$timestamp - $Message"
+}
+
+# Verificar si act_runner ya esta en ejecucion para evitar multiples instancias
+$existingProcess = Get-Process -Name 'act_runner' -ErrorAction SilentlyContinue
+if ($existingProcess) {
+  Write-Log 'act_runner ya esta en ejecucion (PID: {0}). Saliendo.' -f $existingProcess.Id
+  exit 0
+}
+
+$exe = Join-Path $InstallDir 'act_runner.exe'
+$restartCount = 0
+$maxRestarts = 10
+$baseWaitSeconds = 30
+
+Write-Log 'Directorio de trabajo: $InstallDir'
+
+while ($restartCount -lt $maxRestarts) {
+  # Verificar si se solicito graceful shutdown
+  $shouldExit = $false
+  if (Test-Path (Join-Path $InstallDir '.shutdown')) {
+    $shouldExit = $true
+  }
+  
+  if ($shouldExit) {
+    Write-Log 'Saliendo graceful shutdown'
+    break
+  }
+  
+  try {
+    Write-Log 'Iniciando act_runner daemon (intento #$($restartCount + 1))'
+    Write-Log 'Ejecutable: $exe'
+    $outLog = Join-Path $LogDir 'act-runner.stdout.log'
+    $errLog = Join-Path $LogDir 'act-runner.stderr.log'
+    Write-Log 'Stdout log: $outLog'
+    Write-Log 'Stderr log: $errLog'
+    $process = Start-Process -FilePath "$exe" -ArgumentList @('daemon') -WorkingDirectory "$InstallDir" -WindowStyle Hidden -RedirectStandardOutput "$outLog" -RedirectStandardError "$errLog" -PassThru -Wait
+    
+    if ($process.ExitCode -ne 0) {
+      Write-Log 'act_runner termino con codigo de salida: $($process.ExitCode)'
+      Write-Log 'Revisar logs: $outLog y $errLog'
+    } else {
+      Write-Log 'act_runner daemon termino normalmente'
+      break
+    }
+  }
+  catch {
+    Write-Log 'ERROR al iniciar act_runner: $_'
+    Write-Log 'TRACE: $($_.ScriptStackTrace)'
+  }
+  
+  $restartCount++
+  if ($restartCount -ge $maxRestarts) {
+    Write-Log 'Alcanzado maximo de reintentos ($maxRestarts). Saliendo.'
+    break
+  }
+  
+  # Espera exponencial con maximo de 5 minutos
+  $waitSeconds = [Math]::Min($baseWaitSeconds * [Math]::Pow(2, $restartCount), 300)
+  Write-Log 'Esperando $waitSeconds segundos antes de reiniciar...'
+  Start-Sleep -Seconds $waitSeconds
+}

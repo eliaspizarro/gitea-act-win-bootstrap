@@ -77,21 +77,18 @@ Write-Host "PRODUCT_KEY configurada: $(-not [string]::IsNullOrWhiteSpace($env:GI
 ### Runner no se registra con Gitea
 **Síntomas**: `act_runner` no aparece en la interfaz de Gitea
 ```powershell
-# Verificar configuración del runner
-Get-Content C:\Tools\gitea-act-runner\config.yaml
-
 # Probar conexión manualmente
 Test-NetConnection $env:GITEA_SERVER_URL -Port 443
 
 # Verificar token
 if ([string]::IsNullOrWhiteSpace($env:GITEA_RUNNER_TOKEN)) {
-    Write-Error "GITEA_RUNNER_TOKEN no está configurado"
+    Write-Error "GITEA_RUNNER_TOKEN no está configurada"
 }
 ```
 
 **Solución**: Verificar `GITEA_SERVER_URL` y `GITEA_RUNNER_TOKEN`
 
-## 🏗️ Problemas de Instalación
+## Problemas de Instalación
 
 ### Chocolatey falla o timeouts
 - Reintentar y validar conectividad a `community.chocolatey.org`
@@ -142,8 +139,7 @@ Get-LocalGroupMember -Group "Users" | Where-Object Name -like "*$env:GITEA_BOOTS
 ## 🌐 Problemas de Red y Conectividad
 
 ### `act_runner` no conecta a Gitea
-- Validar YAML: `C:\Tools\gitea-act-runner\config.yaml`
-- Variables: ejecuta `configs\set-env.sample.ps1` y vuelve a generar YAML (`630-config-act-runner-yaml.ps1`).
+- Variables: ejecuta `configs\set-env.sample.ps1` para configurar conexión
 - Probar reachability: `Test-NetConnection $env:GITEA_SERVER_URL -Port 443`
 
 ### Firewall bloquea conexiones
@@ -201,8 +197,8 @@ Get-NetFirewallRule -DisplayName "Windows Remote Management*"
 # Verificar servicio del runner
 Get-Service -Name "gitea-act-runner" -ErrorAction SilentlyContinue
 
-# Verificar configuración del runner
-Get-Content C:\Tools\gitea-act-runner\config.yaml
+# Verificar archivo de registro del runner
+Get-Content C:\Tools\gitea-act-runner\.runner
 
 # Verificar variables de entorno configuradas
 Get-ChildItem Env: | Where-Object Name -like "GITEA*" | Sort-Object Name
