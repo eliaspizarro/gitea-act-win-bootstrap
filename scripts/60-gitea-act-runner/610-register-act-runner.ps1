@@ -39,7 +39,8 @@ if (Test-Path -LiteralPath $runnerFile) {
   exit 0 
 }
 
-# Cambiar al directorio del runner antes de registrar
+# Guardar directorio actual y cambiar al del runner
+Push-Location
 Set-Location $InstallDir
 
 # Resolver valores opcionales desde variables de entorno
@@ -76,6 +77,9 @@ try {
 catch {
   Write-ScriptLog -Type 'Error' -Message $_.Exception.Message
   throw
+}
+finally {
+  Pop-Location
 }
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
