@@ -106,7 +106,7 @@ Get-ChildItem ".\scripts\70-maintenance\*.ps1" | ForEach-Object { & $_.FullName 
 ```powershell
 # Ejecutar todos los scripts en orden automáticamente
 Get-ChildItem -Path "scripts" -Recurse -Filter "*.ps1" | 
-    Sort-Object { [int]($_.Name -split '-')[0] }, { [int]($_.Name -split '-')[1] } | 
+    Sort-Object { [int]($_.Name -split '-')[0] } | 
     ForEach-Object { & $_.FullName }
 ```
 
