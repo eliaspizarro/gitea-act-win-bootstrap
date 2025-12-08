@@ -36,6 +36,21 @@ else {
   }
 }
 
+# Añadir también derecho de inicio de sesión por trabajos por lotes (tareas programadas)
+$content = Get-Content -Path $inf -Raw
+$line2 = ($content -split "`r?`n") | Where-Object { $_ -match '^SeBatchLogonRight\s*=\s*' } | Select-Object -First 1
+if (-not $line2) {
+  Add-Content -Path $inf -Value "SeBatchLogonRight = $acct"
+}
+else {
+  if ($line2 -notmatch [Regex]::Escape($acct)) {
+    $newLine2 = if ($line2.TrimEnd().EndsWith('=')) { "SeBatchLogonRight = $acct" } else { $line2.TrimEnd() + ",$acct" }
+    (Get-Content -Path $inf) | ForEach-Object {
+      if ($_ -match '^SeBatchLogonRight\s*=\s*') { $newLine2 } else { $_ }
+    } | Set-Content -Path $inf -Encoding ASCII
+  }
+}
+
 secedit /configure /db $sdb /cfg $inf /quiet | Out-Null
 
 Remove-Item -Recurse -Force -Path $tmp -ErrorAction SilentlyContinue | Out-Null

@@ -53,7 +53,7 @@ try {
 }
 
 if ($RunAsSystem) {
-  & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU SYSTEM /F /V1
+  & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU SYSTEM /F
   if ($LASTEXITCODE -ne 0) { 
     throw "Error al crear tarea programada (código: $LASTEXITCODE)"
   }
@@ -63,7 +63,7 @@ else {
   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
   try {
     $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-    & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU $User /RP $plain /F /V1
+    & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU $User /RP $plain /F
     if ($LASTEXITCODE -ne 0) { 
       throw "Error al crear tarea programada (código: $LASTEXITCODE)"
     }

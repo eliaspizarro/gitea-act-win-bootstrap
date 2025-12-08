@@ -55,6 +55,7 @@ if (Test-Path -LiteralPath `$nodePath) {
 # 2. Cambiar al directorio del runner
 Set-Location `$InstallDir
 Write-Log "Directorio de trabajo: `$InstallDir"
+`$exe = Join-Path `$InstallDir 'act_runner.exe'
 
 # 3. Bucle infinito: si el runner se cae, se vuelve a levantar con backoff exponencial
 `$restartCount = 0
@@ -75,17 +76,21 @@ while (`$true) {
   
   try {
     Write-Log "Iniciando act_runner daemon (intento #`$(`$restartCount + 1))"
+    Write-Log "Ejecutable: `$exe"
+    Write-Log "Config: `$ConfigPath"
     `$process = Start-Process -FilePath "`$exe" -ArgumentList @('daemon','--config',"`$ConfigPath") -WorkingDirectory "`$InstallDir" -WindowStyle Hidden -PassThru -Wait
     
-    if ($process.ExitCode -ne 0) {
-      Write-Log "act_runner terminó con código de salida: $($process.ExitCode)"
+    if (`$process.ExitCode -ne 0) {
+      Write-Log "act_runner terminó con código de salida: `$(`$process.ExitCode)"
     } else {
       Write-Log "act_runner terminó normalmente"
       `$restartCount = 0  # Resetear contador si terminó normalmente
     }
   }
   catch {
-    Write-Log "ERROR al iniciar act_runner: $_"
+    Write-Log ("ERROR al iniciar act_runner: {0}" -f `$_.Exception.Message)
+    if (`$_.ScriptStackTrace) { Write-Log ("TRACE: {0}" -f `$_.ScriptStackTrace) }
+    if (`$_.InvocationInfo -and `$_.InvocationInfo.PositionMessage) { Write-Log ("AT: {0}" -f `$_.InvocationInfo.PositionMessage) }
   }
   
   if (`$shouldExit) {
