@@ -17,6 +17,15 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 try { choco feature disable -n showDownloadProgress | Out-Null } catch {}
 try { choco feature enable -n allowGlobalConfirmation | Out-Null } catch {}
 
+# Actualizar PATH para la sesión actual si Chocolatey está instalado
+if (Get-Command choco -ErrorAction SilentlyContinue) {
+  $chocoPath = "$env:ProgramData\chocolatey\bin"
+  if ($env:PATH -notlike "*$chocoPath*") {
+    $env:PATH = "$env:PATH;$chocoPath"
+    Write-Host "PATH actualizado para incluir Chocolatey en la sesión actual" -ForegroundColor Green
+  }
+}
+
 # Configurar directorio caché si se especificó
 if ($cacheDir -and (Get-Command choco -ErrorAction SilentlyContinue)) {
   if (-not (Test-Path -LiteralPath $cacheDir)) { 
