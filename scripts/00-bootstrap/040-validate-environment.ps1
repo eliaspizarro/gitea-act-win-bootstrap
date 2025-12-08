@@ -1,10 +1,4 @@
-﻿# Importar funciones de logging estandarizado
-. "$PSScriptRoot\..\lib\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
-# Script de validación para ejecución desatendida del bootstrap de Gitea Act Runner
+﻿# Script de validación para ejecución desatendida del bootstrap de Gitea Act Runner
 # Verifica que todas las variables de entorno requeridas estén configuradas correctamente
 
 param(
@@ -12,6 +6,12 @@ param(
   [switch]$ListRequired,
   [switch]$AuditScripts
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 
 $ErrorActionPreference = 'Stop'
 
