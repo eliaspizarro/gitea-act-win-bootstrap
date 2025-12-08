@@ -1,13 +1,14 @@
+param(
+  [string]$User = 'gitea-runner',
+  [SecureString]$Password
+)
+
 # Importar funciones de logging estandarizado
 . "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 
-param(
-  [string]$User = 'gitea-runner',
-  [SecureString]$Password
-)
 $ErrorActionPreference = 'Stop'
 
 # Priorizar variables de entorno para ejecución desatendida
