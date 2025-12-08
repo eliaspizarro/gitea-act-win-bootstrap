@@ -98,7 +98,12 @@ $envVars = @{
 }
 
 foreach ($var in $envVars.GetEnumerator()) {
-  try { [Environment]::SetEnvironmentVariable($var.Key, $var.Value, 'Machine') } 
-  catch { [Environment]::SetEnvironmentVariable($var.Key, $var.Value, 'User') }
+  try { 
+    # Variables temporales solo para esta sesión (no persisten tras reinicio)
+    [Environment]::SetEnvironmentVariable($var.Key, $var.Value, 'Process') 
+  } 
+  catch { 
+    Write-Warning "No se pudo establecer variable temporal: $($var.Key)"
+  }
   Set-Item -Path "Env:$($var.Key)" -Value $var.Value | Out-Null
 }
