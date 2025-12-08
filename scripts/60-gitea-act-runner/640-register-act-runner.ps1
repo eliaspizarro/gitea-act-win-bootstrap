@@ -43,13 +43,13 @@ $useConfig = Test-Path -LiteralPath $cfg
 
 try {
   if ($useConfig) {
-    & $exe register --config "$cfg" --no-interaction
+    & $exe register --config "$cfg" --no-interactive
   }
   else {
     $serverUrl = $env:GITEA_SERVER_URL
     $serverToken = $env:GITEA_RUNNER_TOKEN
     if (-not $serverUrl -or -not $serverToken) { throw 'Faltan GITEA_SERVER_URL o GITEA_RUNNER_TOKEN y no existe config.yaml' }
-    $regArgs = @('register','--no-interaction','--instance', $serverUrl, '--token', $serverToken)
+    $regArgs = @('register','--no-interactive','--instance', $serverUrl, '--token', $serverToken)
     if ($RunnerName) { $regArgs += @('--name', $RunnerName) }
     if ($Labels) { $regArgs += @('--labels', $Labels) }
     if ($WorkDir) { $regArgs += @('--workdir', $WorkDir) }
