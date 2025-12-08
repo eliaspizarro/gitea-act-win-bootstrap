@@ -46,11 +46,14 @@ GITEA_BOOTSTRAP_USER = 'gitea-runner'
 GITEA_BOOTSTRAP_RUNNER_PASSWORD = 'ClaveSegura123!@#'
 ```
 
-### 2. Cargar Variables de Entorno
+### 2. Cargar Variables de Entorno (Temporales - Solo Sesión Actual)
 ```powershell
 # Cargar las variables en la sesión actual de PowerShell
+# NOTA: Las variables son temporales y solo duran esta sesión
 . .\configs\set-env.ps1
 ```
+
+> **⚠️ Importante**: Las variables de entorno ahora son temporales (Process scope) y no persisten tras reiniciar PowerShell o el sistema. Debe ejecutar `.\configs\set-env.ps1` en cada nueva sesión.
 
 ### 3. Validar Configuración
 ```powershell
@@ -118,17 +121,24 @@ Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object TaskName, State, Ac
 ```
 
 ### 5. Administrar Tarea del Runner
+
+**Iniciar la tarea del runner**
 ```powershell
-# Iniciar la tarea del runner
 Start-ScheduledTask -TaskName "GiteaActRunner"
+```
 
-# Detener la tarea del runner (antes de reiniciar el servidor)
+**Detener la tarea del runner (antes de reiniciar el servidor)**
+```powershell
 Stop-ScheduledTask -TaskName "GiteaActRunner"
+```
 
-# Ver estado de la tarea
+**Ver estado de la tarea**
+```powershell
 Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object State, LastRunTime
+```
 
-# Ver logs del runner
+**Ver logs del runner**
+```powershell
 Get-Content -Tail 50 C:\Logs\ActRunner\act-runner.stderr.log
 ```
 

@@ -22,7 +22,7 @@ Este repositorio automatiza el bootstrap de un runner de Gitea `act_runner` en W
 
 ## Orden recomendado de ejecución
 1. **Configurar variables**: `Copy-Item configs\set-env.sample.ps1 configs\set-env.ps1` y editar valores
-2. **Validar configuración**: `.\scripts\00-bootstrap\040-validate-environment.ps1`
+2. **Validar configuración**: `.\scripts\00-bootstrap\000-validate-environment.ps1`
 3. scripts/00-bootstrap/*
 4. scripts/10-os-config/* (incluye 115 rutas largas y 170 activación opcional)
 5. scripts/40-system-tools/*

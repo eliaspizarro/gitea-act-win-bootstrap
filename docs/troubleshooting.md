@@ -17,13 +17,13 @@ Write-Host "GITEA_RUNNER_TOKEN: $env:GITEA_RUNNER_TOKEN"
 **Solución**: Ejecutar `.\configs\set-env.ps1` como administrador
 
 ### Script de validación falla
-**Síntomas**: `040-validate-environment.ps1` reporta variables faltantes
+**Síntomas**: `000-validate-environment.ps1` reporta variables faltantes
 ```powershell
 # Ejecutar validación detallada
-.\scripts\00-bootstrap\040-validate-environment.ps1 -Verbose
+.\scripts\00-bootstrap\000-validate-environment.ps1 -Verbose
 
 # Listar variables requeridas
-.\scripts\00-bootstrap\040-validate-environment.ps1 -ListRequired
+.\scripts\00-bootstrap\000-validate-environment.ps1 -ListRequired
 ```
 
 **Solución**: Configurar variables faltantes en `configs\set-env.ps1`
