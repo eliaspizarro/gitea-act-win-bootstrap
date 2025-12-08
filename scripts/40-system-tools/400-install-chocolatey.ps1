@@ -1,12 +1,12 @@
 # Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+. "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 $cacheDir = if ($env:GITEA_BOOTSTRAP_CHOCO_CACHE_DIR -and $env:GITEA_BOOTSTRAP_CHOCO_CACHE_DIR -ne '') { $env:GITEA_BOOTSTRAP_CHOCO_CACHE_DIR } else { $null }
 
 if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
@@ -17,14 +17,15 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 try { choco feature disable -n showDownloadProgress | Out-Null } catch {}
 try { choco feature enable -n allowGlobalConfirmation | Out-Null } catch {}
 
-# Configurar directorio cachÃ© si se especificÃ³
+# Configurar directorio caché si se especificó
 if ($cacheDir -and (Get-Command choco -ErrorAction SilentlyContinue)) {
   if (-not (Test-Path -LiteralPath $cacheDir)) { 
     New-Item -ItemType Directory -Path $cacheDir -Force | Out-Null 
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   try { choco config set cacheLocation $cacheDir | Out-Null } catch {}
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
 
 

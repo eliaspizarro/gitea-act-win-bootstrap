@@ -1,17 +1,17 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [switch]$Enable,
   [int]$Port = 22,
   [switch]$AllowFirewall
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 if ($env:GITEA_BOOTSTRAP_ENABLE_SSH -and $env:GITEA_BOOTSTRAP_ENABLE_SSH -eq 'true') {
   $Enable = $true
 }
@@ -24,8 +24,6 @@ if ($env:GITEA_BOOTSTRAP_SSH_FIREWALL -and $env:GITEA_BOOTSTRAP_SSH_FIREWALL -eq
 
 if (-not $Enable) {
   Write-Host "SSH no habilitado. Use -Enable o configure GITEA_BOOTSTRAP_ENABLE_SSH='true'" -ForegroundColor Yellow
-
-Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   exit 0
 }
 
@@ -35,7 +33,7 @@ Write-Host "Habilitando servidor SSH en Windows..." -ForegroundColor Cyan
 $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
 Write-Host "Sistema operativo: $($osInfo.Caption)" -ForegroundColor Green
 
-# Instalar la caracterÃ­stica OpenSSH Server si no estÃ¡ presente
+# Instalar la característica OpenSSH Server si no está presente
 try {
   $sshFeature = Get-WindowsCapability -Online | Where-Object { $_.Name -like 'OpenSSH.Server*' }
   if (-not $sshFeature -or $sshFeature.State -ne 'Installed') {
@@ -43,7 +41,7 @@ try {
     Add-WindowsCapability -Online -Name $sshFeature.Name
     Write-Host "OpenSSH Server instalado correctamente" -ForegroundColor Green
   } else {
-    Write-Host "OpenSSH Server ya estÃ¡ instalado" -ForegroundColor Green
+    Write-Host "OpenSSH Server ya está instalado" -ForegroundColor Green
   }
 } catch {
   Write-Error "Error al instalar OpenSSH Server: $_"
@@ -54,10 +52,10 @@ try {
 try {
   Write-Host "Configurando servicio sshd..." -ForegroundColor Yellow
   
-  # Iniciar el servicio si no estÃ¡ corriendo
+  # Iniciar el servicio si no está corriendo
   $sshService = Get-Service -Name 'sshd' -ErrorAction SilentlyContinue
   if (-not $sshService) {
-    Write-Error "Servicio sshd no encontrado despuÃ©s de la instalaciÃ³n"
+    Write-Error "Servicio sshd no encontrado después de la instalación"
     exit 1
   }
   
@@ -66,9 +64,9 @@ try {
     Write-Host "Servicio sshd iniciado" -ForegroundColor Green
   }
   
-  # Configurar para inicio automÃ¡tico
+  # Configurar para inicio automático
   Set-Service -Name 'sshd' -StartupType Automatic
-  Write-Host "Servicio sshd configurado para inicio automÃ¡tico" -ForegroundColor Green
+  Write-Host "Servicio sshd configurado para inicio automático" -ForegroundColor Green
   
 } catch {
   Write-Error "Error al configurar el servicio sshd: $_"
@@ -102,11 +100,11 @@ if ($Port -ne 22) {
   try {
     Write-Host "Configurando puerto SSH a $Port..." -ForegroundColor Yellow
     
-    # Ruta del archivo de configuraciÃ³n SSH
+    # Ruta del archivo de configuración SSH
     $sshConfigPath = "$env:ProgramData\ssh\sshd_config"
     
     if (Test-Path $sshConfigPath) {
-      # Leer configuraciÃ³n actual
+      # Leer configuración actual
       $configContent = Get-Content $sshConfigPath
       
       # Reemplazar o agregar puerto
@@ -121,19 +119,19 @@ if ($Port -ne 22) {
         }
       }
       
-      # Si no se encontrÃ³ lÃ­nea de puerto, agregarla
+      # Si no se encontró línea de puerto, agregarla
       if (-not $portLineFound) {
         $newConfig = @("Port $Port") + $newConfig
       }
       
-      # Guardar configuraciÃ³n
+      # Guardar configuración
       $newConfig | Set-Content $sshConfigPath -Encoding UTF8
       
       # Reiniciar servicio para aplicar cambios
       Restart-Service -Name 'sshd'
       Write-Host "Puerto SSH configurado a $Port y servicio reiniciado" -ForegroundColor Green
     } else {
-      Write-Warning "Archivo de configuraciÃ³n SSH no encontrado en $sshConfigPath"
+      Write-Warning "Archivo de configuración SSH no encontrado en $sshConfigPath"
     }
     
   } catch {
@@ -161,5 +159,13 @@ try {
 } catch {
   Write-Warning "No se pudo verificar el estado final: $_"
 }
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
+
+
+
+
 
 

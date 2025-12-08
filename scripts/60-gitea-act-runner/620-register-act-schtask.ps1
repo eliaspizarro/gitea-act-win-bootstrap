@@ -1,9 +1,3 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$TaskName = 'GiteaActRunner',
@@ -12,9 +6,15 @@ param(
   [string]$User,
   [SecureString]$Password
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR -and $env:GITEA_BOOTSTRAP_INSTALL_DIR -ne '') { $env:GITEA_BOOTSTRAP_INSTALL_DIR } else { $InstallDir }
 if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') {
   $User = $env:GITEA_BOOTSTRAP_USER
@@ -45,13 +45,14 @@ else {
   try {
     $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
     & schtasks /Create /TN $TaskName /TR $action $triggerArg /RL HIGHEST /RU $User /RP $plain /F /DU INFINITE /K /V1 | Out-Null
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
   finally {
     if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
   }
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
 
 

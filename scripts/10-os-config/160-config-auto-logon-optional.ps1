@@ -1,18 +1,18 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [switch]$Enable,
   [string]$User,
   [SecureString]$Password,
   [string]$Domain = ''
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 if ($env:GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE -and $env:GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE -eq 'true') {
   $Enable = $true
 }
@@ -39,10 +39,12 @@ try {
   Set-ItemProperty -Path $key -Name 'DefaultUserName' -Type String -Value $User -Force
   if ($Domain) { Set-ItemProperty -Path $key -Name 'DefaultDomainName' -Type String -Value $Domain -Force }
   Set-ItemProperty -Path $key -Name 'DefaultPassword' -Type String -Value $plain -Force
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 } finally {
   if ($plain) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)) | Out-Null }
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
+
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
 
 

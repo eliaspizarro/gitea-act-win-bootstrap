@@ -1,5 +1,5 @@
 # Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+. "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
@@ -24,7 +24,5 @@ foreach ($i in $items) {
   foreach ($p in @($c,$s)) { if (-not (Test-Path $p)) { New-Item -Path $p -Force | Out-Null } }
   foreach ($kv in $i.Client.GetEnumerator()) { New-ItemProperty -Path $c -Name $kv.Key -Value $kv.Value -PropertyType DWord -Force | Out-Null }
   foreach ($kv in $i.Server.GetEnumerator()) { New-ItemProperty -Path $s -Name $kv.Key -Value $kv.Value -PropertyType DWord -Force | Out-Null }
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
-
-
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer

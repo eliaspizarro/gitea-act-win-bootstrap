@@ -1,5 +1,5 @@
 # Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+. "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
@@ -10,10 +10,10 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 $User = if ($env:GITEA_BOOTSTRAP_USER) { $env:GITEA_BOOTSTRAP_USER } else { $User }
 
-# Si no se proporcionÃ³ password, usar variable de entorno automÃ¡ticamente
+# Si no se proporcionó password, usar variable de entorno automáticamente
 if (-not $Password) {
   $envPw = $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD
   if ($envPw) { 
@@ -32,4 +32,8 @@ Set-LocalUser -Name $User -Password $Password
 
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
+
+
 

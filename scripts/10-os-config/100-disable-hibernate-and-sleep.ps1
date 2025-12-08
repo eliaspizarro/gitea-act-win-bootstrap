@@ -1,5 +1,5 @@
 # Importar funciones de logging estandarizado
-. "$PSScriptRoot\..\00-bootstrap\logging.ps1"
+. "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'

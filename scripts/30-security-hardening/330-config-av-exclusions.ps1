@@ -1,16 +1,16 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [string[]]$Paths = @('C:\CI','C:\Tools','C:\Logs','C:\Tools\gitea-act-runner'),
   [switch]$DisableRealtime
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 if ($env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -and $env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -ne '') {
   $Paths = $env:GITEA_BOOTSTRAP_AV_EXCLUSIONS.Split(';') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
 }
@@ -27,4 +27,6 @@ if ($DisableRealtime) { Set-MpPreference -DisableRealtimeMonitoring $true }
 
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
 

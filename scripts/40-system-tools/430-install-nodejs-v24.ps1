@@ -1,14 +1,14 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [int]$DesiredMajor = 24
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no estÃ¡ instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no está instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
 
 function Get-NodeMajor {
   $ver = (& node -v 2>$null)
@@ -22,14 +22,18 @@ if (-not $major) {
   $major = Get-NodeMajor
 }
 if ($major -ne $DesiredMajor) {
-  # Intentar actualizar a la Ãºltima disponible; Chocolatey no garantiza mayor especÃ­fico sin versiÃ³n exacta
+  # Intentar actualizar a la última disponible; Chocolatey no garantiza mayor específico sin versión exacta
   choco upgrade nodejs -y --no-progress | Out-Null
   $major = Get-NodeMajor
 }
 if ($major -ne $DesiredMajor) {
-  Write-Warning ("Node.js instalado con major {0}, pero se solicitÃ³ {1}." -f $major, $DesiredMajor)
+  Write-Warning ("Node.js instalado con major {0}, pero se solicitó {1}." -f $major, $DesiredMajor)
 }
 
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
+
+
 

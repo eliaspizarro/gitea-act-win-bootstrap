@@ -1,11 +1,11 @@
 # Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+. "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 
 $ErrorActionPreference = 'Stop'
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no estÃ¡ instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no está instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
 
 # Asegura vswhere
 if (-not (Get-Command vswhere -ErrorAction SilentlyContinue)) {
@@ -30,10 +30,14 @@ if (-not $vsbt) {
   $vsbt = & vswhere -products Microsoft.VisualStudio.Product.BuildTools -property installationPath 2>$null | Select-Object -First 1
 }
 
-# ValidaciÃ³n MSBuild
+# validación MSBuild
 $msbuild = Get-ChildItem -Path "$vsbt\MSBuild\Current\Bin" -Filter msbuild.exe -ErrorAction SilentlyContinue | Select-Object -First 1
-if (-not $msbuild) { Write-Warning 'MSBuild no encontrado tras la instalaciÃ³n de BuildTools.' }
+if (-not $msbuild) { Write-Warning 'MSBuild no encontrado tras la instalación de BuildTools.' }
 
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
+
+
 

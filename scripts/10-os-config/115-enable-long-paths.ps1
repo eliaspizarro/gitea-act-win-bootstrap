@@ -1,5 +1,5 @@
 # Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
+. "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
@@ -15,7 +15,6 @@ $git = Get-Command git -ErrorAction SilentlyContinue
 if ($null -ne $git) {
   try { & git config --system core.longpaths true 2>$null } catch {}
   try { & git config --global core.longpaths true 2>$null } catch {}
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
 
-
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer

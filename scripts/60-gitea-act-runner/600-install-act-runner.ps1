@@ -1,17 +1,17 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$Version,
   [string]$AssetUrl
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
   Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
 } else { 
@@ -32,7 +32,7 @@ Invoke-WebRequest -UseBasicParsing -Uri $AssetUrl -OutFile $zip
 Expand-Archive -Path $zip -DestinationPath $InstallDir -Force
 $found = Get-ChildItem -Path $InstallDir -Recurse -Filter act_runner.exe -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($found -and ($found.FullName -ne $exe)) { Move-Item -Force -Path $found.FullName -Destination $exe }
-if (-not (Test-Path -LiteralPath $exe)) { throw 'act_runner.exe no se encontrÃ³ tras la extracciÃ³n.' }
+if (-not (Test-Path -LiteralPath $exe)) { throw 'act_runner.exe no se encontró tras la extracción.' }
 $machinePath = [Environment]::GetEnvironmentVariable('Path','Machine')
 if (-not ($machinePath.Split(';') -contains $InstallDir)) {
   [Environment]::SetEnvironmentVariable('Path', ($machinePath.TrimEnd(';') + ';' + $InstallDir), 'Machine')
@@ -40,4 +40,7 @@ if (-not ($machinePath.Split(';') -contains $InstallDir)) {
 
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
+
 

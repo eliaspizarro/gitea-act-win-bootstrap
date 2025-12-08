@@ -1,15 +1,15 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [switch]$AllowWinRM
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 if ($env:GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM -and $env:GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM -eq 'true') {
   $AllowWinRM = $true
 }
@@ -24,4 +24,6 @@ if ($AllowWinRM) {
 
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
+
+
 

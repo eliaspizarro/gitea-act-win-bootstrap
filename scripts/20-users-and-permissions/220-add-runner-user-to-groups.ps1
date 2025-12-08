@@ -1,16 +1,16 @@
-# Importar funciones de logging estandarizado
-. "D:\Develop\personal\gitea-act-win-bootstrap\scripts\00-bootstrap\..\00-bootstrap\logging.ps1"
-
-$scriptTimer = Start-ScriptTimer
-Write-ScriptLog -Type 'Start'
-
 param(
   [string]$User = 'gitea-runner',
   [string[]]$Groups = @('Users', 'Performance Log Users')
 )
+
+# Importar funciones de logging estandarizado
+. "$PSScriptRoot\..\lib\logging.ps1"
+
+$scriptTimer = Start-ScriptTimer
+Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecuciÃ³n desatendida
+# Priorizar variables de entorno para ejecución desatendida
 $User = if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') { $env:GITEA_BOOTSTRAP_USER } else { $User }
 if ($env:GITEA_BOOTSTRAP_USER_GROUPS -and $env:GITEA_BOOTSTRAP_USER_GROUPS -ne '') {
   $Groups = $env:GITEA_BOOTSTRAP_USER_GROUPS.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
@@ -24,7 +24,7 @@ foreach ($g in $Groups) {
   $lg = Get-LocalGroup -Name $g -ErrorAction SilentlyContinue
   if ($null -eq $lg) { continue }
   try { Add-LocalGroupMember -Group $g -Member $User -ErrorAction SilentlyContinue } catch {}
-  Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 }
 
+Write-ScriptLog -Type 'End' -StartTime $scriptTimer
 
