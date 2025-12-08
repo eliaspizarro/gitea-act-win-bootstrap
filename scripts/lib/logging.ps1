@@ -13,7 +13,16 @@ function Write-ScriptLog {
     )
     
     $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-    $scriptName = $PSCmdlet.MyInvocation.MyCommand.Name
+    $scriptName = 'Unknown'
+    $callStack = Get-PSCallStack
+    
+    # Buscar el primer script .ps1 en la pila de llamadas
+    for ($i = 1; $i -lt $callStack.Count; $i++) {
+        if ($callStack[$i].ScriptName -and $callStack[$i].ScriptName.EndsWith('.ps1')) {
+            $scriptName = Split-Path -Leaf $callStack[$i].ScriptName
+            break
+        }
+    }
     
     switch ($Type) {
         'Start' {
