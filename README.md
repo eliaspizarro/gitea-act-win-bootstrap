@@ -49,17 +49,14 @@ GITEA_BOOTSTRAP_RUNNER_PASSWORD = 'ClaveSegura123!@#'
 
 ### 2. Cargar Variables de Entorno
 ```powershell
-# Cargar las variables en la sesión actual de PowerShell (¡IMPORTANTE!)
+# Cargar las variables en la sesión actual de PowerShell
 . .\configs\set-env.ps1
-
-# Verificar que las variables se cargaron correctamente
-Get-ChildItem Env:GITEA_BOOTSTRAP_*
 ```
 
 ### 3. Validar Configuración
 ```powershell
 # Ejecutar como administrador
-Get-ChildItem ".\scripts\00-bootstrap\040-validate-environment.ps1" | ForEach-Object { & $_.FullName }
+& ".\scripts\00-bootstrap\000-validate-environment.ps1"
 ```
 
 ### 3. Ejecutar Bootstrap Completo
@@ -101,8 +98,8 @@ Get-ChildItem -Path "scripts" -Recurse -Filter "*.ps1" |
 
 ### 4. Verificar Runner
 ```powershell
-# El runner debería estar registrado y funcionando
-Get-Service -Name "gitea-act-runner"
+# El runner debería estar registrado y funcionando como tarea programada
+Get-ScheduledTask -TaskName "GiteaActRunner"
 ```
 
 ## 📋 Documentación
