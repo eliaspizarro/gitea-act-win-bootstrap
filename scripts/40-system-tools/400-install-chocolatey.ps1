@@ -9,22 +9,39 @@ $ErrorActionPreference = 'Stop'
 # Priorizar variables de entorno para ejecución desatendida
 $cacheDir = if ($env:GITEA_BOOTSTRAP_CHOCO_CACHE_DIR -and $env:GITEA_BOOTSTRAP_CHOCO_CACHE_DIR -ne '') { $env:GITEA_BOOTSTRAP_CHOCO_CACHE_DIR } else { $null }
 
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+$chocoPath = "$env:PROGRAMDATA\chocolatey"
+$chocoExe = "$chocoPath\bin\choco.exe"
+
+# Detectar instalación corrupta y limpiar
+if ((Test-Path $chocoPath) -and -not (Test-Path $chocoExe)) {
+  Write-Host "Detectada instalación corrupta de Chocolatey. Limpiando..." -ForegroundColor Yellow
+  Remove-Item -Path $chocoPath -Recurse -Force
+}
+
+# Instalar Chocolatey si no está presente
+if (-not (Test-Path $chocoExe)) {
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
   Set-ExecutionPolicy Bypass -Scope Process -Force
-  Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-}
-try { choco feature disable -n showDownloadProgress | Out-Null } catch {}
-try { choco feature enable -n allowGlobalConfirmation | Out-Null } catch {}
-
-# Actualizar PATH para la sesión actual si Chocolatey está instalado
-if (Get-Command choco -ErrorAction SilentlyContinue) {
-  $chocoPath = "$env:ProgramData\chocolatey\bin"
-  if ($env:PATH -notlike "*$chocoPath*") {
-    $env:PATH = "$env:PATH;$chocoPath"
-    Write-Host "PATH actualizado para incluir Chocolatey en la sesión actual" -ForegroundColor Green
+  
+  try {
+    Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')) 2>&1 | Out-Null
+    
+    if (-not (Test-Path $chocoExe)) {
+      throw "La instalación de Chocolatey falló"
+    }
+  }
+  catch {
+    Write-Error "Error durante la instalación de Chocolatey: $_"
+    throw
   }
 }
+
+# Actualizar PATH para la sesión actual
+$env:PATH = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+Write-Host "PATH actualizado para incluir Chocolatey en la sesión actual" -ForegroundColor Green
+
+try { choco feature disable -n showDownloadProgress | Out-Null } catch {}
+try { choco feature enable -n allowGlobalConfirmation | Out-Null } catch {}
 
 # Configurar directorio caché si se especificó
 if ($cacheDir -and (Get-Command choco -ErrorAction SilentlyContinue)) {

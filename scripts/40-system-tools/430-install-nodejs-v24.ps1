@@ -11,6 +11,7 @@ $ErrorActionPreference = 'Stop'
 if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no está instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
 
 function Get-NodeMajor {
+  if (-not (Get-Command node -ErrorAction SilentlyContinue)) { return $null }
   $ver = (& node -v 2>$null)
   if (-not $ver) { return $null }
   if ($ver -match 'v(\d+)\.') { return [int]$Matches[1] } else { return $null }
@@ -19,6 +20,14 @@ function Get-NodeMajor {
 $major = Get-NodeMajor
 if (-not $major) {
   choco install nodejs -y --no-progress | Out-Null
+  # Refrescar variables de entorno para que node esté disponible
+  try {
+    Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" -ErrorAction Stop
+    refreshenv
+  } catch {
+    # Si refreshenv no está disponible, actualizar PATH manualmente
+    $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH", "User")
+  }
   $major = Get-NodeMajor
 }
 if ($major -ne $DesiredMajor) {
