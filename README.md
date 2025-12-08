@@ -34,8 +34,7 @@ cd gitea-act-win-bootstrap-latest
 # Copiar archivo de configuración
 Copy-Item configs\set-env.sample.ps1 configs\set-env.ps1
 
-# Editar con sus valores reales
-notepad configs\set-env.ps1
+# Editar el archivo configs\set-env.ps1 con la información correspondiente
 ```
 
 **Variables requeridas mínimas**:

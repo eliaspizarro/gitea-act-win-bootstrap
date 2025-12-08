@@ -33,7 +33,7 @@ if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
 $startScript = Join-Path $InstallDir 'start-act-runner.ps1'
 if (-not (Test-Path -LiteralPath $startScript)) { throw "No existe: $startScript (ejecute 610-create-start-script.ps1)" }
 
-$triggerArg = if ($Trigger -eq 'Startup') { '/SC ONSTART' } else { '/SC ONLOGON' }
+$triggerType = if ($Trigger -eq 'Startup') { 'ONSTART' } else { 'ONLOGON' }
 $action = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$startScript`""
 
 # Si existe, eliminar para recrear limpio
@@ -53,14 +53,20 @@ try {
 }
 
 if ($RunAsSystem) {
-  & schtasks /Create /TN $TaskName /TR $action $triggerArg /RL HIGHEST /RU SYSTEM /F /DU INFINITE /K /V1 | Out-Null
+  & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU SYSTEM /F /V1
+  if ($LASTEXITCODE -ne 0) { 
+    throw "Error al crear tarea programada (código: $LASTEXITCODE)"
+  }
 }
 else {
   if (-not $User -or -not $Password) { throw 'Debe especificar -User y -Password (o use -RunAsSystem).' }
   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
   try {
     $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-    & schtasks /Create /TN $TaskName /TR $action $triggerArg /RL HIGHEST /RU $User /RP $plain /F /DU INFINITE /K /V1 | Out-Null
+    & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU $User /RP $plain /F /V1
+    if ($LASTEXITCODE -ne 0) { 
+      throw "Error al crear tarea programada (código: $LASTEXITCODE)"
+    }
   }
   finally {
     if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
@@ -68,7 +74,3 @@ else {
 }
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer
-
-
-
-
