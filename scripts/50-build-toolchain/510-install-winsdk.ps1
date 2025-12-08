@@ -19,7 +19,7 @@ if (-not $winsdkVersion) {
 }
 
 # Directorio de instalación base
-$installDir = $env:GITEA_BOOTSTRAP_INSTALL_DIR ?? 'C:\Tools'
+$installDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { $env:GITEA_BOOTSTRAP_INSTALL_DIR } else { 'C:\Tools' }
 $winsdkDir = Join-Path $installDir "WindowsSDK\$winsdkVersion"
 $sdkBinPath = Join-Path $winsdkDir 'bin'
 
@@ -32,8 +32,7 @@ if (Test-Path -LiteralPath $signtoolPath) {
   Write-Host "Windows SDK $winsdkVersion ya está instalado."
 } else {
   # Usar NuGet.exe (debe estar instalado por script previo)
-  $nugetExe = Join-Path $installDir 'nuget.exe'
-  if (-not (Test-Path -LiteralPath $nugetExe)) {
+  if (-not (Get-Command nuget -ErrorAction SilentlyContinue)) {
     throw 'NuGet.exe no encontrado. Ejecute primero el script de instalación de NuGet.'
   }
 
@@ -43,35 +42,23 @@ if (Test-Path -LiteralPath $signtoolPath) {
   # Descargar paquete NuGet del Windows SDK BuildTools
   Write-Host "Descargando Microsoft.Windows.SDK.BuildTools versión $winsdkVersion..."
   try {
-    & $nugetExe install Microsoft.Windows.SDK.BuildTools -Version $winsdkVersion -OutputDirectory $winsdkDir -NoCache
+    nuget install Microsoft.Windows.SDK.BuildTools -Version $winsdkVersion -OutputDirectory $winsdkDir -NoCache
   } catch {
     throw "No se pudo descargar el paquete NuGet. Verifique que la versión $winsdkVersion existe en NuGet."
   }
 
   # El paquete ya está extraído por nuget.exe, solo necesitamos encontrar la ruta correcta
   $packageDir = Join-Path $winsdkDir "Microsoft.Windows.SDK.BuildTools.$winsdkVersion"
-  $versionShort = $winsdkVersion -replace '\.\d+$',''  # Extraer 10.0.26100.0 de 10.0.26100.6901
+  $versionShort = $winsdkVersion -replace '\.\d+$','.0'  # Extraer 10.0.26100.0 de 10.0.26100.6901
   
-  # Buscar signtool.exe en la estructura extraída
-  $signtoolFound = $false
-  $possiblePaths = @(
-    Join-Path $packageDir "bin\$versionShort\x64\signtool.exe",
-    Join-Path $packageDir "bin\x64\signtool.exe",
-    Join-Path $packageDir "tools\bin\$versionShort\x64\signtool.exe",
-    Join-Path $packageDir "tools\bin\x64\signtool.exe"
-  )
+  # Usar la ruta correcta basada en la estructura real del paquete
+  $correctSigntoolPath = Join-Path $packageDir "bin\$versionShort\x64\signtool.exe"
   
-  foreach ($path in $possiblePaths) {
-    if (Test-Path -LiteralPath $path) {
-      $sdkBinPath = Split-Path $path -Parent
-      $signtoolFound = $true
-      Write-Host "Windows SDK encontrado en: $sdkBinPath"
-      break
-    }
-  }
-  
-  if (-not $signtoolFound) {
-    throw "Windows SDK $winsdkVersion no se encontró después de la instalación. Estructura del paquete no reconocida."
+  if (Test-Path -LiteralPath $correctSigntoolPath) {
+    $sdkBinPath = Split-Path $correctSigntoolPath -Parent
+    Write-Host "Windows SDK encontrado en: $sdkBinPath"
+  } else {
+    throw "Windows SDK $winsdkVersion no se encontró en la ruta esperada: $correctSigntoolPath"
   }
 }
 
