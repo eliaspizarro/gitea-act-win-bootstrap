@@ -18,6 +18,12 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) {
   $InstallDir 
 }
 
+$Version = if ($env:GITEA_BOOTSTRAP_ACT_RUNNER_VERSION) { 
+  $env:GITEA_BOOTSTRAP_ACT_RUNNER_VERSION 
+} else { 
+  $Version 
+}
+
 if (-not (Test-Path -LiteralPath $InstallDir)) { New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null }
 $exe = Join-Path $InstallDir 'act_runner.exe'
 if (Test-Path -LiteralPath $exe) { return }

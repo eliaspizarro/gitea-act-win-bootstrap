@@ -61,6 +61,7 @@ $envVars = @{
   
   # Configuración de instalación de herramientas
   GITEA_BOOTSTRAP_INSTALL_DIR = 'C:\Tools'                                 # Directorio base para instalación de herramientas
+  GITEA_BOOTSTRAP_ACT_RUNNER_VERSION = '0.2.13'                            # Versión específica de act_runner a instalar (ej: 0.2.13)
   GITEA_BOOTSTRAP_CHOCO_CACHE_DIR = 'C:\ChocoCache'                        # Directorio caché de Chocolatey para optimizar descargas
   GITEA_BOOTSTRAP_LOG_DIR = 'C:\Logs'                                      # Directorio base para logs de servicios y aplicaciones
   GITEA_BOOTSTRAP_DOTNET_CHANNEL = '8.0'                                   # Canal de .NET SDK a instalar (ej: 6.0, 7.0, 8.0)

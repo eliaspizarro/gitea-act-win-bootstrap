@@ -55,6 +55,7 @@ Todos los scripts soportan ejecución desatendida usando variables de entorno. L
 | Variable | Propósito | Default | Scripts que usan |
 |----------|-----------|---------|------------------|
 | `GITEA_BOOTSTRAP_INSTALL_DIR` | Directorio base para herramientas | `C:\Tools` | `600-*.ps1`, `610-*.ps1` |
+| `GITEA_BOOTSTRAP_ACT_RUNNER_VERSION` | Versión específica de act_runner | `0.2.13` | `600-install-act-runner.ps1` |
 | `GITEA_BOOTSTRAP_CHOCO_CACHE_DIR` | Directorio caché de Chocolatey | `D:\ChocoCache` | `400-install-chocolatey.ps1` |
 | `GITEA_BOOTSTRAP_LOG_DIR` | Directorio base para logs | `C:\Logs` | `610-create-start-script.ps1` |
 | `GITEA_BOOTSTRAP_DOTNET_CHANNEL` | Canal de .NET SDK | `8.0` | `420-install-dotnet-sdk.ps1` |
