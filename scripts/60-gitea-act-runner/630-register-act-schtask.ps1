@@ -1,9 +1,6 @@
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$TaskName = 'GiteaActRunner',
-  [ValidateSet('Startup','Logon')][string]$Trigger = 'Startup',
-  [switch]$RunAsSystem,
-  [string]$User,
   [SecureString]$Password
 )
 
@@ -20,12 +17,13 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR -and $env:GITEA_BOOTSTRAP_INS
 } else { 
   $InstallDir 
 }
-if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') {
-  $User = $env:GITEA_BOOTSTRAP_USER
-}
 if ($env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -and $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -ne '' -and -not $Password) {
   $Password = ConvertTo-SecureString -String $env:GITEA_BOOTSTRAP_RUNNER_PASSWORD -AsPlainText -Force
 }
+
+# Construir LogDir consistentemente con script 620
+$logBase = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } else { 'C:\Logs' }
+$LogDir = Join-Path $logBase 'ActRunner'
 
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
@@ -33,36 +31,68 @@ if (-not $isAdmin) { throw 'Se requieren privilegios de administrador.' }
 $startScript = Join-Path $InstallDir 'start-act-runner.ps1'
 if (-not (Test-Path -LiteralPath $startScript)) { throw "No existe: $startScript (ejecute 620-create-start-script.ps1)" }
 
-$triggerType = if ($Trigger -eq 'Startup') { 'ONSTART' } else { 'ONLOGON' }
-$action = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$startScript`""
-Write-Host "DEBUG: Action string = $action" -ForegroundColor Cyan
+# Determinar usuario para ejecutar la tarea
+$taskUser = if ($env:GITEA_BOOTSTRAP_USER -and $env:GITEA_BOOTSTRAP_USER -ne '') {
+  $env:GITEA_BOOTSTRAP_USER
+} else {
+  $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent().Name
+  $currentUser
+}
 
-# Si existe, eliminar para recrear limpio (solo schtasks)
-& schtasks /Query /TN $TaskName 2>&1 | Out-Null
-if ($LASTEXITCODE -eq 0) {
-  & schtasks /Delete /TN $TaskName /F | Out-Null
+Write-Host "Usuario seleccionado para la tarea programada: $taskUser" -ForegroundColor Green
+
+# Validar que el usuario exista
+try {
+  $null = Get-LocalUser -Name ($taskUser.Split('\')[-1]) -ErrorAction Stop
+}
+catch {
+  throw "El usuario '$taskUser' no existe en el sistema."
+}
+
+# Validar permisos de escritura en directorios críticos
+$requiredDirs = @($InstallDir, $LogDir)
+foreach ($dir in $requiredDirs) {
+  if (-not (Test-Path -Path $dir -PathType Container)) {
+    throw "El directorio requerido no existe: $dir"
+  }
+  
+  # Verificar permisos de escritura
+  $testFile = Join-Path $dir "test_access_$(Get-Random).tmp"
+  try {
+    "test" | Out-File -FilePath $testFile -ErrorAction Stop
+    Remove-Item $testFile -Force -ErrorAction SilentlyContinue
+  }
+  catch {
+    throw "El usuario '$taskUser' no tiene permisos de escritura en: $dir"
+  }
+}
+
+Write-Host "✓ Permisos validados para el usuario '$taskUser'" -ForegroundColor Green
+
+# Construir acción para PowerShell Scheduled Task
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$startScript`""
+$trigger = if ($Trigger -eq 'Startup') { 
+  New-ScheduledTaskTrigger -AtStartup 
+} else { 
+  New-ScheduledTaskTrigger -AtLogon 
+}
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -DontStopOnIdleEnd -ExecutionTimeLimit (New-TimeSpan -Days 3650)
+
+# Si existe, eliminar para recrear limpio
+try {
+  Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop | Unregister-ScheduledTask -Confirm:$false
   Write-Host "Tarea existente '$TaskName' eliminada" -ForegroundColor Green
 }
+catch {
+  # No existe, continuar
+}
 
-if ($RunAsSystem) {
-  & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU SYSTEM /F
-  if ($LASTEXITCODE -ne 0) { 
-    throw "Error al crear tarea programada (código: $LASTEXITCODE)"
-  }
+# Crear tarea con el usuario determinado
+if (-not $Password) {
+  # Solicitar contraseña si no se proporcionó
+  $Password = Read-Host "Ingrese contraseña para usuario '$taskUser'" -AsSecureString
 }
-else {
-  if (-not $User -or -not $Password) { throw 'Debe especificar -User y -Password (o use -RunAsSystem).' }
-  $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
-  try {
-    $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-    & schtasks /Create /TN $TaskName /TR $action /SC $triggerType /RL HIGHEST /RU $User /RP $plain /F
-    if ($LASTEXITCODE -ne 0) { 
-      throw "Error al crear tarea programada (código: $LASTEXITCODE)"
-    }
-  }
-  finally {
-    if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
-  }
-}
+
+Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -User $taskUser -Password $Password -RunLevel Highest | Out-Null
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer

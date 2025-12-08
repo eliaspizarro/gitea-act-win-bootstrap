@@ -50,8 +50,11 @@ $script = @"
 
 param(
   [string]`$InstallDir = '$InstallDir',
-  [string]`$LogDir = '$LogDir'
+  [string]`$LogDirBase = if (`$env:GITEA_BOOTSTRAP_LOG_DIR) { `$env:GITEA_BOOTSTRAP_LOG_DIR } else { 'C:\Logs' }
 )
+
+# Construir siempre la ruta correcta para ActRunner
+`$LogDir = Join-Path `$LogDirBase 'ActRunner'
 
 `$ErrorActionPreference = 'Stop'
 
@@ -126,7 +129,7 @@ while (`$true) {
   Start-Sleep -Seconds `$waitSeconds
 }
 "@
-Set-Content -Path $startScript -Value $script -Encoding UTF8
+Set-Content -Path $startScript -Value $script -Encoding UTF8 -Force
 Write-Output $startScript
 
 Write-ScriptLog -Type 'End' -StartTime $scriptTimer

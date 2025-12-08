@@ -1,6 +1,5 @@
 param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
-  [string]$ConfigPath,
   [string]$RunnerName,
   [string]$Labels,
   [string]$WorkDir
