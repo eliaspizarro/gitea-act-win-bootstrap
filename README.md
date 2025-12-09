@@ -223,11 +223,49 @@ gitea-act-win-bootstrap/
 - `GITEA_BOOTSTRAP_AV_EXCLUSIONS`: Variables de entorno para exclusiones AV (default: GITEA_BOOTSTRAP_INSTALL_DIR,GITEA_BOOTSTRAP_TEMP_DIR,GITEA_BOOTSTRAP_LOG_DIR,GITEA_BOOTSTRAP_PROFILE_BASE_DIR)
 - `GITEA_BOOTSTRAP_PRODUCT_KEY`: Clave de activación Windows
 - `GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM`: Permitir WinRM (default: false)
-- `GITEA_BOOTSTRAP_USER_GROUPS`: Grupos locales para el usuario del runner. Acepta SIDs (recomendado, p. ej., `S-1-5-32-544`) o alias independientes del idioma (`Administrators`,`Users`,`Performance Log Users`).
+- `GITEA_BOOTSTRAP_USER_GROUPS`: Grupos locales para el usuario del runner. Acepta SIDs (recomendado, p. ej., `S-1-5-32-544`) o alias independientes del idioma (`Administrators`,`Users`,`Performance Log Users`). Ver lista completa de SSID estándar below.
 
 **Nota**: El Windows SDK se instala vía NuGet para mayor precisión de versiones. [Ver versiones disponibles](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)
 
 [📖 Ver configuración completa en configs/set-env.sample.ps1](configs/set-env.sample.ps1)
+
+## 📋 Grupos Locales y SSID Estándar (Windows Server 2025)
+
+Lista completa de grupos locales y sus SSID correspondientes en una instalación limpia de Windows Server 2025 Core:
+
+| Nombre del Grupo | SSID | Descripción |
+|------------------|------|-------------|
+| Administradores | S-1-5-32-544 | Acceso completo al sistema |
+| Usuarios | S-1-5-32-545 | Usuarios estándar del sistema |
+| Invitados | S-1-5-32-546 | Acceso limitado para invitados |
+| Usuarios avanzados | S-1-5-32-547 | Permisos elevados limitados |
+| Operadores de cuentas | S-1-5-32-548 | Gestión de cuentas de usuario |
+| Operadores de servidor | S-1-5-32-549 | Administración del servidor |
+| Opers. de impresión | S-1-5-32-550 | Administración de impresoras |
+| Operadores de copia de seguridad | S-1-5-32-551 | Ejecutar backups y restauraciones |
+| Duplicadores | S-1-5-32-552 | Replicación de dominio |
+| Operadores de configuración de red | S-1-5-32-556 | Configuración de red |
+| Usuarios del monitor de sistema | S-1-5-32-558 | Monitoreo de rendimiento |
+| Usuarios del registro de rendimiento | S-1-5-32-559 | Acceso a logs de rendimiento |
+| Usuarios COM distribuidos | S-1-5-32-562 | Acceso a DCOM distribuido |
+| Operadores criptográficos | S-1-5-32-569 | Operaciones criptográficas |
+| IIS_IUSRS | S-1-5-32-568 | Usuarios de IIS |
+| Lectores del registro de eventos | S-1-5-32-573 | Acceso a logs de eventos |
+| Acceso DCOM a Serv. de certif. | S-1-5-32-574 | DCOM para servicios de certificados |
+| Servidores de acceso remoto RDS | S-1-5-32-575 | Servidores RDS de acceso remoto |
+| Servidores de extremo RDS | S-1-5-32-576 | Servidores RDS endpoint |
+| Servidores de administración RDS | S-1-5-32-577 | Servidores RDS administración |
+| Administradores de Hyper-V | S-1-5-32-578 | Administración de Hyper-V |
+| Operadores de asistencia de control de acceso | S-1-5-32-579 | Asistencia de control de acceso |
+| Usuarios de administración remota | S-1-5-32-580 | Administración remota |
+| Usuarios de escritorio remoto | S-1-5-32-555 | Acceso vía Escritorio Remoto |
+| Usuarios de OpenSSH | S-1-5-32-585 | Usuarios de OpenSSH |
+| Propietarios del dispositivo | S-1-5-32-583 | Propietarios de dispositivos |
+| Operadores de hardware en modo usuario | S-1-5-32-584 | Acceso a hardware en modo usuario |
+| Storage Replica Administrators | S-1-5-32-582 | Administración de Storage Replica |
+| System Managed Accounts Group | S-1-5-32-581 | Cuentas gestionadas por el sistema |
+
+**Uso recomendado**: Para máxima compatibilidad internacional, use los SSID en lugar de los nombres de grupo (que varían según el idioma del sistema).
 
 ## 🚀 Flujo de Ejecución
 
