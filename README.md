@@ -139,10 +139,26 @@ Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object State, LastRunTime
 ```
 
 **Ver logs del runner**
-Ver los últimos 50 registros del log del runner.
+### 6. Administrar Procesos del Act Runner
 
+**Ver procesos act_runner activos**
 ```powershell
-Get-Content -Tail 50 $env:GITEA_BOOTSTRAP_LOG_DIR\ActRunner\act-runner.stderr.log
+Get-Process -Name "act_runner" -ErrorAction SilentlyContinue | Select-Object Id, StartTime, CPU
+```
+
+**Terminar proceso específico (reemplazar ID)**
+```powershell
+Stop-Process -Id 1234 -Force -ErrorAction SilentlyContinue
+```
+
+**Terminar todos los procesos act_runner**
+```powershell
+Get-Process -Name "act_runner" -ErrorAction SilentlyContinue | Stop-Process -Force
+```
+
+**Verificar que no queden procesos activos**
+```powershell
+Get-Process -Name "act_runner" -ErrorAction SilentlyContinue
 ```
 
 ## 📋 Documentación
