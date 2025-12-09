@@ -238,7 +238,15 @@ Remove-Item Env:GITEA_BOOTSTRAP_RUNNER_PASSWORD
 
 ## 📄 Licencia
 
-[Ver LICENSE](LICENSE) para detalles.
+Este proyecto está licenciado bajo la **MIT License**, que permite:
+
+- ✅ **Uso comercial**: Puedes vender el software
+- ✅ **Distribución**: Puedes compartir copias  
+- ✅ **Modificación**: Puedes modificar el código
+- ✅ **Sublicenciamiento**: Puedes licenciar a terceros
+- ✅ **Uso sin restricciones**: Uso privado o comercial
+
+[Ver LICENSE](LICENSE) para detalles completos.
 
 ---
 
