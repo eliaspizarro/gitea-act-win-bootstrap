@@ -215,7 +215,7 @@ gitea-act-win-bootstrap/
 - `GITEA_BOOTSTRAP_RUNNER_PASSWORD`: Contraseña del usuario
 
 ### Opcionales Populares
-- `GITEA_BOOTSTRAP_TIMEZONE`: Zona horaria (default: UTC)
+- `GITEA_BOOTSTRAP_TIMEZONE`: ID de zona horaria de Windows en inglés (default: UTC). Liste IDs con: `tzutil /l`
 - `GITEA_BOOTSTRAP_NTP_SERVER`: Servidor NTP para sincronización (default: ntp.shoa.cl)
 - `GITEA_BOOTSTRAP_INSTALL_DIR`: Directorio de herramientas (default: C:\Tools)
 - `GITEA_BOOTSTRAP_ACT_RUNNER_VERSION`: Versión de act_runner (default: 0.2.13)
@@ -223,6 +223,7 @@ gitea-act-win-bootstrap/
 - `GITEA_BOOTSTRAP_AV_EXCLUSIONS`: Variables de entorno para exclusiones AV (default: GITEA_BOOTSTRAP_INSTALL_DIR,GITEA_BOOTSTRAP_TEMP_DIR,GITEA_BOOTSTRAP_LOG_DIR,GITEA_BOOTSTRAP_PROFILE_BASE_DIR)
 - `GITEA_BOOTSTRAP_PRODUCT_KEY`: Clave de activación Windows
 - `GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM`: Permitir WinRM (default: false)
+- `GITEA_BOOTSTRAP_USER_GROUPS`: Grupos locales para el usuario del runner. Acepta SIDs (recomendado, p. ej., `S-1-5-32-544`) o alias independientes del idioma (`Administrators`,`Users`,`Performance Log Users`).
 
 **Nota**: El Windows SDK se instala vía NuGet para mayor precisión de versiones. [Ver versiones disponibles](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)
 

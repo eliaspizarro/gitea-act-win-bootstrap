@@ -48,6 +48,68 @@ if ([string]::IsNullOrWhiteSpace($env:GITEA_BOOTSTRAP_TIMEZONE)) {
 [Environment]::GetEnvironmentVariable("GITEA_SERVER_URL", "User")
 ```
 
+**Solución**: Ejecutar scripts como administrador
+
+## 🌐 Zona Horaria y Grupos (Multiidioma)
+
+### Zona horaria no se aplica
+**Síntomas**: El sistema mantiene la zona horaria anterior después de ejecutar el script
+**Causa**: `GITEA_BOOTSTRAP_TIMEZONE` debe ser un ID en inglés, no el nombre localizado
+```powershell
+# Listar IDs disponibles (en inglés)
+tzutil /l
+
+# Ejemplo de configuración correcta
+$env:GITEA_BOOTSTRAP_TIMEZONE = 'Pacific SA Standard Time'  # para Chile continental
+# o
+$env:GITEA_BOOTSTRAP_TIMEZONE = 'UTC'
+```
+
+**Solución**: Usar un ID devuelto por `tzutil /l`. No usar nombres localizados.
+
+### El runner no tiene privilegios de administrador
+**Síntomas**: En workflows, `IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)` devuelve $false
+**Causa**: El usuario no fue agregado al grupo Administradores por nombre localizado
+```powershell
+# Verificar si el usuario está en el grupo localizado
+Get-LocalGroupMember -Group 'Administradores' | Where-Object { $_.Name -like "*\$env:GITEA_BOOTSTRAP_USER" }
+
+# Verificar propietario del proceso act_runner
+Get-CimInstance Win32_Process -Filter "Name='act_runner.exe'" | ForEach-Object {
+  $owner = Invoke-CimMethod -InputObject $_ -MethodName GetOwner
+  [PSCustomObject]@{ PID = $_.ProcessId; Usuario = "$($owner.Domain)\$($owner.User)" }
+}
+```
+
+**Solución**: Usar SIDs o alias independientes del idioma
+```powershell
+# Opción 1: SIDs (recomendado)
+$env:GITEA_BOOTSTRAP_USER_GROUPS = 'S-1-5-32-545,S-1-5-32-559,S-1-5-32-544'  # Users, PerfLog, Admins
+
+# Opción 2: Alias (ingles o español)
+$env:GITEA_BOOTSTRAP_USER_GROUPS = 'Users,Performance Log Users,Administrators'
+
+# Aplicar cambios
+.\scripts\20-users-and-permissions\220-add-runner-user-to-groups.ps1
+
+# Refrescar token de la tarea
+Stop-ScheduledTask -TaskName "GiteaActRunner"
+Start-ScheduledTask -TaskName "GiteaActRunner"
+```
+
+### Grupos no encontrados
+**Síntomas**: El script 220 no agrega el usuario a ningún grupo
+**Causa**: Nombres de grupos no coinciden con el idioma del sistema
+```powershell
+# Ver nombres de grupos localizados
+Get-LocalGroup | Select-Object Name | Sort-Object Name
+
+# Probar resolución manual
+.\scripts\20-users-and-permissions\220-add-runner-user-to-groups.ps1 -Verbose
+```
+
+**Solución**: Usar SIDs o alias como se muestra arriba.
+
 **Solución**: Ejecutar `set-env.ps1` como administrador
 
 ## 🚀 Problemas de Ejecución Desatendida
