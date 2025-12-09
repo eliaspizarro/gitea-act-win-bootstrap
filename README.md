@@ -205,6 +205,7 @@ gitea-act-win-bootstrap/
 
 ### Opcionales Populares
 - `GITEA_BOOTSTRAP_TIMEZONE`: Zona horaria (default: UTC)
+- `GITEA_BOOTSTRAP_NTP_SERVER`: Servidor NTP para sincronización (default: ntp.shoa.cl)
 - `GITEA_BOOTSTRAP_INSTALL_DIR`: Directorio de herramientas (default: C:\Tools)
 - `GITEA_BOOTSTRAP_ACT_RUNNER_VERSION`: Versión de act_runner (default: 0.2.13)
 - `GITEA_BOOTSTRAP_WINSDK_VERSION`: Versión específica del Windows SDK (default: 10.0.26100.6901)

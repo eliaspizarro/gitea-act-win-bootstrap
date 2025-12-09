@@ -50,6 +50,7 @@ Este repositorio automatiza el bootstrap de un runner de Gitea `act_runner` en W
 
 ### Variables de Bootstrap (GITEA_BOOTSTRAP_*)
 - `GITEA_BOOTSTRAP_TIMEZONE`: zona horaria del sistema
+- `GITEA_BOOTSTRAP_NTP_SERVER`: servidor NTP para sincronización de tiempo
 - `GITEA_BOOTSTRAP_TEMP_DIR`: directorio temporal personalizado
 - `GITEA_BOOTSTRAP_INSTALL_DIR`: directorio base para herramientas
 - `GITEA_BOOTSTRAP_PRODUCT_KEY`: clave de producto Windows

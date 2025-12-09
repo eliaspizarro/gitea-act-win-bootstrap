@@ -156,6 +156,43 @@ Get-NetFirewallRule -DisplayName "Windows Remote Management*"
 
 ## 🔧 Problemas de Sistema
 
+### Sincronización NTP falla
+**Síntomas**: El servidor no sincroniza la hora con el servidor NTP configurado
+```powershell
+# Verificar configuración NTP actual
+w32tm /query /configuration
+
+# Verificar estado de sincronización
+w32tm /query /status
+
+# Verificar servidor NTP configurado
+Write-Host "NTP Server: $env:GITEA_BOOTSTRAP_NTP_SERVER"
+```
+
+**Solución**: 
+1. Verificar que `GITEA_BOOTSTRAP_NTP_SERVER` esté configurado correctamente
+2. Ejecutar manualmente el script de configuración de zona horaria y NTP:
+   ```powershell
+   .\scripts\10-os-config\120-set-timezone-and-locale.ps1
+   ```
+3. Verificar conectividad al servidor NTP:
+   ```powershell
+   Test-NetConnection $env:GITEA_BOOTSTRAP_NTP_SERVER -Port 123
+   ```
+
+### Servidor NTP no responde
+**Síntomas**: Timeout al intentar sincronizar con el servidor NTP
+```powershell
+# Probar sincronización manual
+w32tm /resync /rediscover
+
+# Cambiar a servidor NTP alternativo
+w32tm /config /manualpeerlist:"pool.ntp.org" /syncfromflags:manual /update
+w32tm /resync /force
+```
+
+**Solución**: Configurar un servidor NTP alternativo en `GITEA_BOOTSTRAP_NTP_SERVER`
+
 ### Runner no levanta al inicio
 - Ver tarea programada: `schtasks /Query /TN GiteaActRunner /V /FO LIST`
 - Forzar ejecución: `schtasks /Run /TN GiteaActRunner`

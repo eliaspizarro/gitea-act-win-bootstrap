@@ -49,6 +49,7 @@ $envVars = @{
   GITEA_BOOTSTRAP_SYSTEM_LOCALE = ''                                       # Configuración regional del sistema (ej: 'es-ES', 'en-US') - vacío para mantener actual
   GITEA_BOOTSTRAP_USER_LOCALE = ''                                         # Configuración regional del usuario (ej: 'es-ES', 'en-US') - vacío para mantener actual
   GITEA_BOOTSTRAP_INPUT_LOCALE = ''                                        # Lista de idiomas de entrada (ej: 'es-ES', 'en-US') - vacío para mantener actual
+  GITEA_BOOTSTRAP_NTP_SERVER = 'ntp.shoa.cl'                               # Servidor NTP para sincronización de tiempo (ej: 'ntp.shoa.cl', 'pool.ntp.org')
   
   # Configuración de directorios temporales
   GITEA_BOOTSTRAP_TEMP_DIR = 'C:\Temp'                                     # Directorio temporal personalizado (dejar vacío para usar defaults del sistema)
