@@ -138,6 +138,17 @@ Stop-ScheduledTask -TaskName "GiteaActRunner"
 Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object State, LastRunTime
 ```
 
+**Ver usuario del proceso act_runner**
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='act_runner.exe'" | ForEach-Object {
+  $owner = Invoke-CimMethod -InputObject $_ -MethodName GetOwner
+  [PSCustomObject]@{
+    PID     = $_.ProcessId
+    Usuario = "$($owner.Domain)\$($owner.User)"
+  }
+}
+```
+
 **Ver logs del runner**
 ### 6. Administrar Procesos del Act Runner
 
