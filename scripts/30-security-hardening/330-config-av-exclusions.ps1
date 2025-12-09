@@ -30,7 +30,7 @@ if ($env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -and $env:GITEA_BOOTSTRAP_AV_EXCLUSIONS -
   
   if ($resolvedPaths.Count -gt 0) {
     $Paths = $resolvedPaths
-    Write-ScriptLog -Type 'Info' -Message "Exclusiones AV resueltas desde variables: $($resolvedPaths -join ', ')"
+    Write-Host "Exclusiones AV resueltas desde variables: $($resolvedPaths -join ', ')" -ForegroundColor Green
   }
 }
 
