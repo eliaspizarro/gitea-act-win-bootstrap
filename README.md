@@ -115,8 +115,9 @@ Get-ChildItem -Path "scripts" -Recurse -Filter "*.ps1" |
 ```
 
 ### 4. Verificar Runner
+Verificar que la tarea programada existe y está configurada.
+
 ```powershell
-# Verificar que la tarea programada existe y está configurada
 Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object TaskName, State, Actions
 ```
 
@@ -138,8 +139,10 @@ Get-ScheduledTask -TaskName "GiteaActRunner" | Select-Object State, LastRunTime
 ```
 
 **Ver logs del runner**
+Ver los últimos 50 registros del log del runner.
+
 ```powershell
-Get-Content -Tail 50 C:\Logs\ActRunner\act-runner.stderr.log
+Get-Content -Tail 50 $env:GITEA_BOOTSTRAP_LOG_DIR\ActRunner\act-runner.stderr.log
 ```
 
 ## 📋 Documentación
@@ -189,6 +192,7 @@ gitea-act-win-bootstrap/
 - `GITEA_BOOTSTRAP_INSTALL_DIR`: Directorio de herramientas (default: C:\Tools)
 - `GITEA_BOOTSTRAP_ACT_RUNNER_VERSION`: Versión de act_runner (default: 0.2.13)
 - `GITEA_BOOTSTRAP_WINSDK_VERSION`: Versión específica del Windows SDK (default: 10.0.26100.6901)
+- `GITEA_BOOTSTRAP_AV_EXCLUSIONS`: Variables de entorno para exclusiones AV (default: GITEA_BOOTSTRAP_INSTALL_DIR,GITEA_BOOTSTRAP_TEMP_DIR,GITEA_BOOTSTRAP_LOG_DIR,GITEA_BOOTSTRAP_PROFILE_BASE_DIR)
 - `GITEA_BOOTSTRAP_PRODUCT_KEY`: Clave de activación Windows
 - `GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM`: Permitir WinRM (default: false)
 

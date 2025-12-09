@@ -26,7 +26,6 @@ $envVars = @{
   RUNNER_NAME = '${RUNNER_NAME}'                                           # Nombre único del runner (ej: win-server-01-prod, debe ser único en su organización)
   RUNNER_LABELS = 'windows,core,win2025'                                   # Etiquetas que determinan qué trabajos ejecuta este runner (ej: docker,build,deploy)
   RUNNER_WORKDIR = 'C:\Tools\gitea-act-runner\work'                        # Directorio donde se descargan y ejecutan los trabajos CI/CD
-  RUNNER_CONCURRENCY = '2'                                                 # Número de trabajos simultáneos (1-4 recomendado, depende de CPU/RAM)
   
   # Activación de Windows Server 2025
   GITEA_BOOTSTRAP_CHECK_ONLY = 'false'                                     # 'true' para solo verificar estado de activación, 'false' para activar con la clave
@@ -66,9 +65,7 @@ $envVars = @{
   GITEA_BOOTSTRAP_LOG_DIR = 'C:\Logs'                                      # Directorio base para logs de servicios y aplicaciones
   GITEA_BOOTSTRAP_DOTNET_CHANNEL = '8.0'                                   # Canal de .NET SDK a instalar (ej: 6.0, 7.0, 8.0)
   GITEA_BOOTSTRAP_WINSDK_VERSION = '10.0.26100.6901'                       # Versión específica del Windows SDK a instalar vía NuGet
-  
-  # Configuración de exclusiones de antivirus
-  GITEA_BOOTSTRAP_AV_EXCLUSIONS = 'C:\Tools;C:\Temp;C:\Tools\gitea-act-runner\work' # Directorios a excluir del antivirus (separados por ;)
+  GITEA_BOOTSTRAP_AV_EXCLUSIONS = 'GITEA_BOOTSTRAP_INSTALL_DIR,GITEA_BOOTSTRAP_TEMP_DIR,GITEA_BOOTSTRAP_LOG_DIR,GITEA_BOOTSTRAP_PROFILE_BASE_DIR'  # Variables de entorno para exclusiones AV (separadas por ,)
   
   # Configuración de firewall
   GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM = 'false'                            # Permitir WinRM a través del firewall (true/false)

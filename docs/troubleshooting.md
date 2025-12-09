@@ -56,7 +56,7 @@ if ([string]::IsNullOrWhiteSpace($env:GITEA_BOOTSTRAP_TIMEZONE)) {
 **Síntomas**: Scripts solicitan `Read-Host` o parámetros manualmente
 ```powershell
 # Auditar scripts para detectar problemas
-.\scripts\00-bootstrap\040-validate-environment.ps1 -AuditScripts
+.\scripts\00-bootstrap\000-validate-environment.ps1 -AuditScripts
 ```
 
 **Solución**: Configurar variables de entorno antes de ejecutar scripts
@@ -183,13 +183,13 @@ Get-NetFirewallRule -DisplayName "Windows Remote Management*"
 ### Script de validación completo
 ```powershell
 # Validación completa con diagnóstico
-.\scripts\00-bootstrap\040-validate-environment.ps1
+.\scripts\00-bootstrap\000-validate-environment.ps1
 
 # Auditoría de scripts
-.\scripts\00-bootstrap\040-validate-environment.ps1 -AuditScripts
+.\scripts\00-bootstrap\000-validate-environment.ps1 -AuditScripts
 
 # Solo variables requeridas
-.\scripts\00-bootstrap\040-validate-environment.ps1 -SkipOptional
+.\scripts\00-bootstrap\000-validate-environment.ps1 -SkipOptional
 ```
 
 ### Verificación de estado final
@@ -206,9 +206,9 @@ Get-ChildItem Env: | Where-Object Name -like "GITEA*" | Sort-Object Name
 
 ## 📞 Obtener Ayuda
 
-1. **Ejecutar validación**: `.\scripts\00-bootstrap\040-validate-environment.ps1`
+1. **Ejecutar validación**: `.\scripts\00-bootstrap\000-validate-environment.ps1`
 2. **Revisar logs**: `C:\Logs\ActRunner\`
 3. **Verificar variables**: `Get-ChildItem Env: | Where-Object Name -like "GITEA*"`
 4. **Consultar documentación**: `docs\ENVIRONMENT_VARIABLES.md`
-5. **Ejecutar auditoría**: `.\scripts\00-bootstrap\040-validate-environment.ps1 -AuditScripts`
+5. **Ejecutar auditoría**: `.\scripts\00-bootstrap\000-validate-environment.ps1 -AuditScripts`
 

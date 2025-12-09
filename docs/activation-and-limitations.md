@@ -66,7 +66,7 @@ Remove-Item Env:GITEA_BOOTSTRAP_PRODUCT_KEY
 - Automatiza `-CheckOnly` en mantenimiento para alertas tempranas.
 - Documenta el origen de la clave (KMS/MAK/Retail) y ventanas de renovación.
 - Para claves retail, guarda el respaldo físico/digital seguro fuera del repositorio.
-- **Validación**: Ejecuta `.\scripts\00-bootstrap\040-validate-environment.ps1` para verificar configuración antes del bootstrap.
+- **Validación**: Ejecuta `.\scripts\00-bootstrap\000-validate-environment.ps1` para verificar configuración antes del bootstrap.
 
 ## Flujo de Activación Desatendida
 1. **Configurar**: Editar `configs/set-env.ps1` con la clave de producto

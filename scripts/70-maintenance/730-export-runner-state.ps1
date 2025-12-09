@@ -1,5 +1,5 @@
 param(
-  [string]$OutputDir = 'C:\Logs',
+  [string]$OutputDir = 'C:\Logs',  # Default, se sobrescribe con variable de entorno
   [switch]$IncludeDiagnostics
 )
 

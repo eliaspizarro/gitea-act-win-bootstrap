@@ -17,7 +17,7 @@ Use esta lista como verificación rápida. Todas las acciones son reversibles y 
   ```
 
 - [ ] **Usar almacenes de secretos en producción**: Considerar Azure Key Vault, HashiCorp Vault o similar en lugar de variables de entorno
-- [ ] **Validar configuración antes de ejecutar**: `.\scripts\00-bootstrap\040-validate-environment.ps1`
+- [ ] **Validar configuración antes de ejecutar**: `.\scripts\00-bootstrap\000-validate-environment.ps1`
 - [ ] **No almacenar claves en el repositorio**: Usar templates `${VARIABLE_NAME}` en `set-env.sample.ps1`
 
 ### Permisos de Variables

@@ -1,6 +1,6 @@
 param(
-  [string[]]$Paths = @('C:\CI','C:\Logs','C:\Tools\gitea-act-runner'),
-  [int]$OlderThanDays = 14
+  [int]$OlderThanDays = 14,
+  [string[]]$Paths = @()  # Se construirá con variables de entorno
 )
 
 # Importar funciones de logging estandarizado
@@ -10,14 +10,19 @@ $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
-# Priorizar variables de entorno para ejecución desatendida
-$InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
-  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner'
+# Construir rutas con variables de entorno
+$logDir = if ($env:GITEA_BOOTSTRAP_LOG_DIR) { $env:GITEA_BOOTSTRAP_LOG_DIR } else { 'C:\Logs' }
+$installDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) { 
+  Join-Path $env:GITEA_BOOTSTRAP_INSTALL_DIR 'gitea-act-runner' 
 } else { 
-  'C:\Tools\gitea-act-runner'
+  'C:\Tools\gitea-act-runner' 
 }
-$Paths = @('C:\CI','C:\Logs',$InstallDir)
+$ciDir = if ($env:GITEA_BOOTSTRAP_PROFILE_BASE_DIR) { $env:GITEA_BOOTSTRAP_PROFILE_BASE_DIR } else { 'C:\CI' }
 
+# Usar rutas con variables de entorno o valores por defecto
+if ($Paths.Count -eq 0) {
+  $Paths = @($ciDir, $logDir, $installDir)
+}
 # Priorizar variables de entorno para ejecución desatendida
 if ($env:GITEA_BOOTSTRAP_CLEANUP_PATHS -and $env:GITEA_BOOTSTRAP_CLEANUP_PATHS -ne '') {
   $Paths = $env:GITEA_BOOTSTRAP_CLEANUP_PATHS.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }

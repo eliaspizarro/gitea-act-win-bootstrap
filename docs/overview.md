@@ -58,7 +58,6 @@ Este repositorio automatiza el bootstrap de un runner de Gitea `act_runner` en W
 ### Variables del Runner (sin prefijo)
 - `RUNNER_LABELS`: etiquetas separadas por coma
 - `RUNNER_WORKDIR`: directorio de trabajo del runner
-- `RUNNER_CONCURRENCY`: concurrencia del runner
 
 Se establecen con `configs/set-env.sample.ps1` y se consumen en todos los scripts para ejecución desatendida.
 
@@ -68,7 +67,7 @@ Se establecen con `configs/set-env.sample.ps1` y se consumen en todos los script
 - Instalación de herramientas exclusivamente en modo CLI (sin GUI).
 
 ## Validación y Auditoría
-- **Script de validación**: `scripts/00-bootstrap/040-validate-environment.ps1`
+- **Script de validación**: `scripts/00-bootstrap/000-validate-environment.ps1`
 - **Auditoría de scripts**: Verifica que todos los scripts sean compatibles desatendidos
 - **Resultado**: 42/42 scripts compatibles (100%)
 
