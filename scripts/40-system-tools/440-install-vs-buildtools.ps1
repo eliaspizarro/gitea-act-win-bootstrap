@@ -1,4 +1,4 @@
-# Importar funciones de logging estandarizado
+﻿# Importar funciones de logging estandarizado
 . "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
@@ -14,7 +14,7 @@ $InstallDir = if ($env:GITEA_BOOTSTRAP_INSTALL_DIR) {
 }
 $MSBuildDir = Join-Path $InstallDir 'msbuild'
 
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no está instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no esta instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
 
 # Asegura vswhere
 if (-not (Get-Command vswhere -ErrorAction SilentlyContinue)) {
@@ -41,7 +41,7 @@ if (-not $vsbt) {
 
 # validación MSBuild
 $msbuild = Get-ChildItem -Path "$vsbt\MSBuild\Current\Bin" -Filter msbuild.exe -ErrorAction SilentlyContinue | Select-Object -First 1
-if (-not $msbuild) { Write-Warning 'MSBuild no encontrado tras la instalación de BuildTools.' }
+if (-not $msbuild) { Write-Warning 'MSBuild no encontrado tras la instalacion de BuildTools.' }
 
 # Agregar MSBuild al PATH para usar comandos sin ruta completa
 $msbuildBinPath = Join-Path $vsbt 'MSBuild\Current\Bin'

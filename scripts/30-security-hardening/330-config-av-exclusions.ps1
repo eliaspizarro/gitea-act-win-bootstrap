@@ -1,5 +1,5 @@
-param(
-  [string[]]$Paths = @()  # Se construirá con variables de entorno
+﻿param(
+  [string[]]$Paths = @()  # Se construira con variables de entorno
 )
 
 # Importar funciones de logging estandarizado

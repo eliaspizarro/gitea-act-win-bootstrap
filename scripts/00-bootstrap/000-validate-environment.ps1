@@ -19,48 +19,48 @@ $ErrorActionPreference = 'Stop'
 $requiredVars = @(
   @{ Name = 'GITEA_SERVER_URL'; Description = 'URL completa del servidor Gitea'; Required = $true },
   @{ Name = 'GITEA_RUNNER_TOKEN'; Description = 'Token del runner generado en Gitea'; Required = $true },
-  @{ Name = 'RUNNER_NAME'; Description = 'Nombre único del runner'; Required = $true },
+  @{ Name = 'RUNNER_NAME'; Description = 'Nombre unico del runner'; Required = $true },
   @{ Name = 'GITEA_BOOTSTRAP_USER'; Description = 'Nombre de usuario local para el runner'; Required = $true },
-  @{ Name = 'GITEA_BOOTSTRAP_RUNNER_PASSWORD'; Description = 'Contraseña del usuario del runner'; Required = $true }
+  @{ Name = 'GITEA_BOOTSTRAP_RUNNER_PASSWORD'; Description = 'Contrasena del usuario del runner'; Required = $true }
 )
 
 $optionalVars = @(
   @{ Name = 'RUNNER_LABELS'; Description = 'Etiquetas del runner (default: windows,core,win2025)'; Required = $false },
   @{ Name = 'RUNNER_WORKDIR'; Description = 'Directorio de trabajo del runner'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CHECK_ONLY'; Description = 'Solo verificar activación Windows (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CHECK_ONLY'; Description = 'Solo verificar activacion Windows (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PRODUCT_KEY'; Description = 'Clave de producto Windows'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_USER_GROUPS'; Description = 'Grupos para el usuario del runner (separados por ,)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_TIMEZONE'; Description = 'Zona horaria (default: UTC)'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_SYSTEM_LOCALE'; Description = 'configuración regional del sistema'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_USER_LOCALE'; Description = 'configuración regional del usuario'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_SYSTEM_LOCALE'; Description = 'configuracion regional del sistema'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_USER_LOCALE'; Description = 'configuracion regional del usuario'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_INPUT_LOCALE'; Description = 'Lista de idiomas de entrada'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_TEMP_DIR'; Description = 'Directorio temporal personalizado'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_TMP_DIR'; Description = 'Directorio TMP personalizado'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_SIZE'; Description = 'Tamaño del pagefile en MB'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_SIZE'; Description = 'Tamano del pagefile en MB'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_DRIVE'; Description = 'Unidad del pagefile (default: C:)'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_INSTALL_DIR'; Description = 'Directorio base para instalación de herramientas'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_ACT_RUNNER_VERSION'; Description = 'Versión específica de act_runner a instalar'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CHOCO_CACHE_DIR'; Description = 'Directorio caché de Chocolatey'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_INSTALL_DIR'; Description = 'Directorio base para instalacion de herramientas'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_ACT_RUNNER_VERSION'; Description = 'Version especifica de act_runner a instalar'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CHOCO_CACHE_DIR'; Description = 'Directorio cache de Chocolatey'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PROFILE_BASE_DIR'; Description = 'Directorio base para perfiles de usuario'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PROFILE_WORK_DIR'; Description = 'Nombre del subdirectorio de trabajo'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_PROFILE_CACHE_DIR'; Description = 'Nombre del subdirectorio de caché'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_PROFILE_CACHE_DIR'; Description = 'Nombre del subdirectorio de cache'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_LOG_DIR'; Description = 'Directorio base para logs de servicios y aplicaciones'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_DOTNET_CHANNEL'; Description = 'Canal de .NET SDK a instalar'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_WINSDK_VERSION'; Description = 'Versión específica del Windows SDK'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_WINSDK_VERSION'; Description = 'Version especifica del Windows SDK'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AV_EXCLUSIONS'; Description = 'Variables de entorno para exclusiones AV (separadas por ,)'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM'; Description = 'Permitir WinRM a través del firewall'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_PATHS'; Description = 'Directorios para limpieza automática'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Días para limpieza automática'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Días para limpieza temporales'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_FIREWALL_ALLOW_WINRM'; Description = 'Permitir WinRM a traves del firewall'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_PATHS'; Description = 'Directorios para limpieza automatica'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Dias para limpieza automatica'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_TEMP_CLEANUP_OLDER_THAN_DAYS'; Description = 'Dias para limpieza temporales'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_EXPORT_OUTPUT_DIR'; Description = 'Directorio para exportar estado'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS'; Description = 'Incluir Diagnóstico en exportación (true/false)'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_EXPORT_INCLUDE_DIAGNOSTICS'; Description = 'Incluir Diagnostico en exportacion (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_ENABLE_WINRM'; Description = 'Habilitar WinRM (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_ENABLE_SSH'; Description = 'Habilitar servidor SSH (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_SSH_PORT'; Description = 'Puerto SSH (default: 22)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_SSH_FIREWALL'; Description = 'Permitir SSH en firewall (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_ENABLE'; Description = 'Habilitar auto-logon (true/false)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_USER'; Description = 'Usuario para auto-logon'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD'; Description = 'Contraseña para auto-logon'; Required = $false },
+  @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_PASSWORD'; Description = 'Contrasena para auto-logon'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_AUTO_LOGON_DOMAIN'; Description = 'Dominio para auto-logon'; Required = $false }
 )
 
@@ -98,7 +98,7 @@ function Test-Prerequisites {
   
   # Verificar PowerShell versión
   $psVersion = $PSVersionTable.PSVersion.Major
-  Write-ValidationResult ($psVersion -ge 5) "PowerShell versión $psVersion (requerido: 5+)"
+  Write-ValidationResult ($psVersion -ge 5) "PowerShell version $psVersion (requerido: 5+)"
   
   # Verificar privilegios de administrador
   $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -107,9 +107,9 @@ function Test-Prerequisites {
   # Verificar conexión a internet (opcional)
   try {
     Test-Connection -ComputerName 8.8.8.8 -Count 1 -Quiet | Out-Null
-    Write-ValidationResult $true "conexión a internet disponible"
+    Write-ValidationResult $true "conexion a internet disponible"
   } catch {
-    Write-Host "[INFO] No se pudo verificar conexión a internet" -ForegroundColor Yellow
+    Write-Host "[INFO] No se pudo verificar conexion a internet" -ForegroundColor Yellow
   }
   
   return $isAdmin
@@ -122,7 +122,7 @@ function Find-InteractiveScripts {
   
   $interactivePatterns = @(
     'Read-Host',
-    'param\([^)]*\$[^)]*\)[^;]*$',  # parámetros sin defaults
+    'param\([^)]*\$[^)]*\)[^;]*$',  # parametros sin defaults
     'Write-Host.*"Enter',
     'Write-Host.*"Input',
     'Write-Host.*"Password',
@@ -155,7 +155,7 @@ function Find-InteractiveScripts {
     }
   }
   
-  Write-Host "`nScripts que necesitan modificación (interactivos):" -ForegroundColor Yellow
+  Write-Host "`nScripts que necesitan modificacion (interactivos):" -ForegroundColor Yellow
   $interactiveScripts | ForEach-Object { Write-Host "  - $_" }
   
   Write-Host "`nScripts ya compatibles (no interactivos):" -ForegroundColor Green
@@ -195,7 +195,7 @@ if ($AuditScripts) {
   exit 0
 }
 
-Write-Host "=== validación de Variables de Entorno para Bootstrap Desatendido ===" -ForegroundColor Cyan
+Write-Host "=== validacion de Variables de Entorno para Bootstrap Desatendido ===" -ForegroundColor Cyan
 Write-Host "Fecha: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
 
 # Verificar prerrequisitos
@@ -223,10 +223,10 @@ if (-not $SkipOptional) {
 }
 
 # Resumen final
-Write-Host "`n=== Resumen de validación ===" -ForegroundColor Cyan
+Write-Host "`n=== Resumen de validacion ===" -ForegroundColor Cyan
 if ($allRequiredOk) {
-  Write-ValidationResult $true "Todas las variables requeridas están configuradas"
-  Write-Host "`n[SUCCESS] El entorno está listo para ejecución desatendida del bootstrap" -ForegroundColor Green
+  Write-ValidationResult $true "Todas las variables requeridas estan configuradas"
+  Write-Host "`n[SUCCESS] El entorno esta listo para ejecucion desatendida del bootstrap" -ForegroundColor Green
   exit 0
 } else {
   Write-ValidationResult $false "Faltan variables requeridas"

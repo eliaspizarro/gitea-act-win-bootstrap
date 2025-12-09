@@ -1,4 +1,4 @@
-# Funciones helper para logging estandarizado de scripts
+﻿# Funciones helper para logging estandarizado de scripts
 function Write-ScriptLog {
     param(
         [Parameter(Mandatory=$true)]
@@ -32,13 +32,13 @@ function Write-ScriptLog {
             $duration = ''
             if ($StartTime) {
                 $elapsed = (Get-Date) - $StartTime
-                $duration = " - Duración: $($elapsed.TotalSeconds.ToString('F2'))s"
+                $duration = " - Duracion: $($elapsed.TotalSeconds.ToString('F2'))s"
             }
             $successMsg = if ($Message) { " - $Message" } else { " - Completado exitosamente" }
             Write-Host "[$timestamp] [FIN] $scriptName$successMsg$duration" -ForegroundColor Green
         }
         'Error' {
-            $errorMsg = if ($Message) { " - $Message" } else { " - Error durante ejecución" }
+            $errorMsg = if ($Message) { " - $Message" } else { " - Error durante ejecucion" }
             Write-Host "[$timestamp] [ERROR] $scriptName$errorMsg" -ForegroundColor Red
         }
     }

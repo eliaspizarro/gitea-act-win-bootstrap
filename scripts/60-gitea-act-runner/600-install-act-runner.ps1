@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$ActRunnerVersion,
   [string]$DownloadAssetUrl
@@ -79,7 +79,7 @@ function Grant-RunnerPermissions {
 Grant-RunnerPermissions -DirectoryPath $InstallDir -UserName $runnerUser
 $actRunnerExePath = Join-Path $InstallDir 'act_runner.exe'
 if (Test-Path -LiteralPath $actRunnerExePath) { 
-  Write-Host 'Gitea Act Runner ya está instalado. Omitiendo instalación.' -ForegroundColor Yellow
+  Write-Host 'Gitea Act Runner ya esta instalado. Omitiendo instalacion.' -ForegroundColor Yellow
   return 
 }
 if (-not $DownloadAssetUrl -and -not $ActRunnerVersion) { throw 'Debe proporcionar -DownloadAssetUrl o -ActRunnerVersion (ej: 0.2.10).' }
@@ -101,7 +101,7 @@ try {
   if (-not (Test-Path -LiteralPath $downloadedFilePath)) { throw 'No se pudo descargar act_runner.exe.' }
   
   Move-Item -Force -Path $downloadedFilePath -Destination $actRunnerExePath
-  if (-not (Test-Path -LiteralPath $actRunnerExePath)) { throw 'act_runner.exe no se encontró tras la extracción.' }
+  if (-not (Test-Path -LiteralPath $actRunnerExePath)) { throw 'act_runner.exe no se encontro tras la extraccion.' }
 }
 finally {
   if (Test-Path -LiteralPath $tempDirectory.FullName) {

@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$TaskName = 'GiteaActRunner',
   [string]$Password
@@ -86,7 +86,7 @@ catch {
 
 # Crear tarea con el usuario determinado
 if (-not $Password) {
-  throw "Debe proporcionar la contraseña del usuario '$taskUser' mediante el parametro -Password o la variable de entorno GITEA_BOOTSTRAP_RUNNER_PASSWORD."
+  throw "Debe proporcionar la contrasena del usuario '$taskUser' mediante el parametro -Password o la variable de entorno GITEA_BOOTSTRAP_RUNNER_PASSWORD."
 }
 
 Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -User $taskUser -Password $Password -RunLevel Highest | Out-Null

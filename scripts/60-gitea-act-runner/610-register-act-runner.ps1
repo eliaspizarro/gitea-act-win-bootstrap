@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$InstallDir = 'C:\Tools\gitea-act-runner',
   [string]$RunnerName,
   [string]$Labels,
@@ -54,11 +54,11 @@ try {
   & $exe @regArgs
 
   if ($LASTEXITCODE -ne 0) { 
-    throw "Registro falló con código: $LASTEXITCODE" 
+    throw "Registro fallo con codigo: $LASTEXITCODE" 
   }
   
   if (-not (Test-Path -LiteralPath $runnerFile)) { 
-    throw "Registro completado, pero no se encontró .runner en $InstallDir" 
+    throw "Registro completado, pero no se encontro .runner en $InstallDir" 
   }
 
   # Dar permisos al usuario del runner sobre el archivo .runner

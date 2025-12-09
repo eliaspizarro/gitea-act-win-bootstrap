@@ -1,6 +1,6 @@
-param(
+﻿param(
   [int]$OlderThanDays = 14,
-  [string[]]$Paths = @()  # Se construirá con variables de entorno
+  [string[]]$Paths = @()  # Se construira con variables de entorno
 )
 
 # Importar funciones de logging estandarizado

@@ -1,4 +1,4 @@
-param(
+﻿param(
   [switch]$Enable,
   [int]$Port = 22,
   [switch]$AllowFirewall
@@ -41,7 +41,7 @@ try {
     Add-WindowsCapability -Online -Name $sshFeature.Name
     Write-Host "OpenSSH Server instalado correctamente" -ForegroundColor Green
   } else {
-    Write-Host "OpenSSH Server ya está instalado" -ForegroundColor Green
+    Write-Host "OpenSSH Server ya esta instalado" -ForegroundColor Green
   }
 } catch {
   Write-Error "Error al instalar OpenSSH Server: $_"
@@ -55,7 +55,7 @@ try {
   # Iniciar el servicio si no está corriendo
   $sshService = Get-Service -Name 'sshd' -ErrorAction SilentlyContinue
   if (-not $sshService) {
-    Write-Error "Servicio sshd no encontrado después de la instalación"
+    Write-Error "Servicio sshd no encontrado despues de la instalacion"
     exit 1
   }
   
@@ -66,7 +66,7 @@ try {
   
   # Configurar para inicio automático
   Set-Service -Name 'sshd' -StartupType Automatic
-  Write-Host "Servicio sshd configurado para inicio automático" -ForegroundColor Green
+  Write-Host "Servicio sshd configurado para inicio automatico" -ForegroundColor Green
   
 } catch {
   Write-Error "Error al configurar el servicio sshd: $_"
@@ -131,7 +131,7 @@ if ($Port -ne 22) {
       Restart-Service -Name 'sshd'
       Write-Host "Puerto SSH configurado a $Port y servicio reiniciado" -ForegroundColor Green
     } else {
-      Write-Warning "Archivo de configuración SSH no encontrado en $sshConfigPath"
+      Write-Warning "Archivo de configuracion SSH no encontrado en $sshConfigPath"
     }
     
   } catch {

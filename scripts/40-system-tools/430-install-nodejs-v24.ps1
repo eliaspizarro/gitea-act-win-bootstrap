@@ -1,4 +1,4 @@
-param(
+﻿param(
   [int]$DesiredMajor = 24
 )
 
@@ -8,7 +8,7 @@ param(
 $scriptTimer = Start-ScriptTimer
 Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no está instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw 'Chocolatey no esta instalado. Ejecute 400-install-chocolatey.ps1 primero.' }
 
 function Get-NodeMajor {
   if (-not (Get-Command node -ErrorAction SilentlyContinue)) { return $null }
@@ -36,7 +36,7 @@ if ($major -ne $DesiredMajor) {
   $major = Get-NodeMajor
 }
 if ($major -ne $DesiredMajor) {
-  Write-Warning ("Node.js instalado con major {0}, pero se solicitó {1}." -f $major, $DesiredMajor)
+  Write-Warning ("Node.js instalado con major {0}, pero se solicito {1}." -f $major, $DesiredMajor)
 }
 
 

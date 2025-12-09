@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$User = 'gitea-runner',
   [string]$BaseDir = 'C:\CI',
   [string]$WorkDirName = 'work',
@@ -37,13 +37,13 @@ foreach ($d in @($workDir,$cacheDir)) {
   try {
     icacls "$d" /inheritance:e | Out-Null
     if ($LASTEXITCODE -ne 0) {
-      Write-Warning "icacls inheritance retornó código de error $($LASTEXITCODE) para: $d"
+      Write-Warning "icacls inheritance retorno codigo de error $($LASTEXITCODE) para: $d"
       continue
     }
     
     icacls "$d" /grant:r "$($acct):(M)" /T | Out-Null
     if ($LASTEXITCODE -ne 0) {
-      Write-Warning "icacls grant retornó código de error $($LASTEXITCODE) para: $d"
+      Write-Warning "icacls grant retorno codigo de error $($LASTEXITCODE) para: $d"
     } else {
       Write-Host "Permisos configurados para: $d"
     }
@@ -78,7 +78,7 @@ foreach ($folder in $packageFolders) {
   $expandedFolder = [System.Environment]::ExpandEnvironmentVariables($folder)
   
   if ([string]::IsNullOrWhiteSpace($expandedFolder)) {
-    Write-Warning "Ruta vacía después de expandir variables de entorno: $folder"
+    Write-Warning "Ruta vacia despues de expandir variables de entorno: $folder"
     continue
   }
   
@@ -95,7 +95,7 @@ foreach ($folder in $packageFolders) {
   try {
     icacls "$expandedFolder" /grant:r "$($acct):(M)" /T | Out-Null
     if ($LASTEXITCODE -ne 0) {
-      Write-Warning "icacls retornó código de error $LASTEXITCODE para: $expandedFolder"
+      Write-Warning "icacls retorno codigo de error $LASTEXITCODE para: $expandedFolder"
     } else {
       Write-Host "Permisos configurados para: $expandedFolder"
     }

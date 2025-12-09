@@ -1,4 +1,4 @@
-# Importar funciones de logging estandarizado
+﻿# Importar funciones de logging estandarizado
 . "$PSScriptRoot\..\lib\logging.ps1"
 
 $scriptTimer = Start-ScriptTimer
@@ -14,7 +14,7 @@ $chocoExe = "$chocoPath\bin\choco.exe"
 
 # Detectar instalación corrupta y limpiar
 if ((Test-Path $chocoPath) -and -not (Test-Path $chocoExe)) {
-  Write-Host "Detectada instalación corrupta de Chocolatey. Limpiando..." -ForegroundColor Yellow
+  Write-Host "Detectada instalacion corrupta de Chocolatey. Limpiando..." -ForegroundColor Yellow
   Remove-Item -Path $chocoPath -Recurse -Force
 }
 
@@ -27,18 +27,18 @@ if (-not (Test-Path $chocoExe)) {
     Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')) 2>&1 | Out-Null
     
     if (-not (Test-Path $chocoExe)) {
-      throw "La instalación de Chocolatey falló"
+      throw "La instalacion de Chocolatey fallo"
     }
   }
   catch {
-    Write-Error "Error durante la instalación de Chocolatey: $_"
+    Write-Error "Error durante la instalacion de Chocolatey: $_"
     throw
   }
 }
 
 # Actualizar PATH para la sesión actual
 $env:PATH = [Environment]::GetEnvironmentVariable('Path', 'Machine')
-Write-Host "PATH actualizado para incluir Chocolatey en la sesión actual" -ForegroundColor Green
+Write-Host "PATH actualizado para incluir Chocolatey en la sesion actual" -ForegroundColor Green
 
 try { choco feature disable -n showDownloadProgress | Out-Null } catch {}
 try { choco feature enable -n allowGlobalConfirmation | Out-Null } catch {}
