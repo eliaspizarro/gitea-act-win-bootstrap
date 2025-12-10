@@ -39,10 +39,10 @@ if ($NTPServer) {
         
         # Verificar estado de sincronización
         $syncStatus = w32tm /query /status
-        Write-Host "Estado de sincronización NTP:"
+        Write-Host "Estado de sincronizacion NTP:"
         $syncStatus
         
-        Write-Host "Sincronización NTP completada exitosamente"
+        Write-Host "Sincronizacion NTP completada exitosamente"
     }
     catch {
         Write-Warning "Error al configurar servidor NTP: $_"

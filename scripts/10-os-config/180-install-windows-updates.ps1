@@ -7,29 +7,29 @@ Write-ScriptLog -Type 'Start'
 $ErrorActionPreference = 'Stop'
 
 try {
-  Write-Log "Instalando módulo PSWindowsUpdate si no está presente..."
+  Write-Host "Instalando modulo PSWindowsUpdate si no esta presente..." -ForegroundColor White
   if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     Install-Module -Name PSWindowsUpdate -Force -Confirm:$false
-    Write-Log "Módulo PSWindowsUpdate instalado correctamente"
+    Write-Host "Modulo PSWindowsUpdate instalado correctamente" -ForegroundColor Green
   } else {
-    Write-Log "Módulo PSWindowsUpdate ya está presente"
+    Write-Host "Modulo PSWindowsUpdate ya esta presente" -ForegroundColor Yellow
   }
 
   Import-Module PSWindowsUpdate
   
-  Write-Log "Buscando actualizaciones disponibles..."
+  Write-Host "Buscando actualizaciones disponibles..." -ForegroundColor White
   $updates = Get-WUList
   
   if ($updates.Count -eq 0) {
-    Write-Log "No hay actualizaciones disponibles"
+    Write-Host "No hay actualizaciones disponibles" -ForegroundColor Green
   } else {
-    Write-Log "Se encontraron $($updates.Count) actualizaciones. Iniciando instalación..."
+    Write-Host "Se encontraron $($updates.Count) actualizaciones. Iniciando instalacion..." -ForegroundColor Yellow
     Install-WindowsUpdate -AcceptAll -IgnoreReboot -Verbose
-    Write-Log "Actualizaciones instaladas correctamente (sin reinicio automático)"
+    Write-Host "Actualizaciones instaladas correctamente (sin reinicio automatico)" -ForegroundColor Green
   }
   
 } catch {
-  Write-Log "Error durante la instalación de actualizaciones: $($_.Exception.Message)" -Type 'Error'
+  Write-Host "Error durante la instalacion de actualizaciones: $($_.Exception.Message)" -ForegroundColor Red
   throw
 }
 
