@@ -107,13 +107,16 @@ Get-ChildItem ".\scripts\70-maintenance\*.ps1" | ForEach-Object { & $_.FullName 
 
 *Nota: El script 180-install-windows-updates.ps1 instala actualizaciones sin reinicio automático para permitir ejecución continua del batch.*
 
-**Opción B: Ejecución con PowerShell (automatizada)**
+**Opción B: Ejecución con PowerShell**
 ```powershell
 # Ejecutar todos los scripts en orden automáticamente
 Get-ChildItem -Path "scripts" -Recurse -Filter "*.ps1" | 
     Where-Object { $_.FullName -notmatch '\\lib\\' -and $_.Name -match '^\d{3}-.*\.ps1$' } |
     Sort-Object { [int]($_.Name -split '-')[0] } | 
     ForEach-Object { & $_.FullName }
+
+# Reiniciar sistema después de completar todas las instalaciones
+shutdown /r /t 0
 ```
 
 ### 4. Verificar Runner
