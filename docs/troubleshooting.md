@@ -277,6 +277,44 @@ w32tm /resync /force
 - Ejecutar `scripts\10-os-config\115-enable-long-paths.ps1`
 - Para Git: `git config --system core.longpaths true`
 
+## 🔄 Actualizaciones de Windows
+
+### Script 180-install-windows-updates.ps1 tarda demasiado
+**Síntomas**: El script de actualizaciones tarda más de lo esperado o parece colgado
+**Causa**: Las actualizaciones de Windows pueden ser grandes y requerir mucho tiempo de descarga/instalación
+
+**Solución**: 
+- Ejecutar el script de forma aislada: `.\scripts\10-os-config\180-install-windows-updates.ps1`
+- Monitorear progreso con `Get-WUList` (requiere módulo PSWindowsUpdate)
+- Considerar ejecutar en horario de mantenimiento
+
+### Reinicio pendiente después de actualizaciones
+**Síntomas**: Algunas actualizaciones requieren reinicio pero el script lo omitió
+**Causa**: El script usa `-IgnoreReboot` para permitir ejecución continua del batch
+
+**Verificar reinicios pendientes**:
+```powershell
+# Importar módulo si no está cargado
+Import-Module PSWindowsUpdate
+
+# Verificar si hay reinicio pendiente
+Get-WURebootStatus
+```
+
+**Solución**: 
+- Reiniciar manualmente después de completar todo el batch: `Restart-Computer -Force`
+- O ejecutar actualizaciones con reinicio: `Install-WindowsUpdate -AcceptAll -AutoReboot`
+
+### Módulo PSWindowsUpdate no encontrado
+**Síntomas**: Error "The term 'Get-WUList' is not recognized"
+**Causa**: El módulo PSWindowsUpdate no está instalado
+
+**Solución**: El script 180 instala automáticamente el módulo, pero si falla:
+```powershell
+Install-Module -Name PSWindowsUpdate -Force -Confirm:$false
+Import-Module PSWindowsUpdate
+```
+
 ## 🛠️ Herramientas de Diagnóstico
 
 ### Script de validación completo

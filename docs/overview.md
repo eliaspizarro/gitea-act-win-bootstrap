@@ -3,7 +3,7 @@
 Este repositorio automatiza el bootstrap de un runner de Gitea `act_runner` en Windows (Server Core / Windows 10/11/Server) de forma 100% headless y **100% desatendida**, usando PowerShell y Chocolatey.
 
 ## Características Principales
-- **Ejecución completamente desatendida**: Todos los 42 scripts soportan variables de entorno sin entradas interactivas
+- **Ejecución completamente desatendida**: Todos los 43 scripts soportan variables de entorno sin entradas interactivas
 - **Configuración centralizada**: Sistema de variables de entorno con patrón `GITEA_BOOTSTRAP_*`
 - **Validación automática**: Script de validación con auditoría completa de scripts
 - **Documentación completa**: Referencia completa de 30+ variables de entorno
@@ -24,7 +24,7 @@ Este repositorio automatiza el bootstrap de un runner de Gitea `act_runner` en W
 1. **Configurar variables**: `Copy-Item configs\set-env.sample.ps1 configs\set-env.ps1` y editar valores
 2. **Validar configuración**: `.\scripts\00-bootstrap\000-validate-environment.ps1`
 3. scripts/00-bootstrap/*
-4. scripts/10-os-config/* (incluye 115 rutas largas y 170 activación opcional)
+4. scripts/10-os-config/*
 5. scripts/40-system-tools/*
 6. scripts/50-build-toolchain/*
 7. scripts/20-users-and-permissions/*
@@ -70,7 +70,7 @@ Se establecen con `configs/set-env.sample.ps1` y se consumen en todos los script
 ## Validación y Auditoría
 - **Script de validación**: `scripts/00-bootstrap/000-validate-environment.ps1`
 - **Auditoría de scripts**: Verifica que todos los scripts sean compatibles desatendidos
-- **Resultado**: 42/42 scripts compatibles (100%)
+- **Resultado**: 43/43 scripts compatibles (100%)
 
 ## Documentación
 - `docs/ENVIRONMENT_VARIABLES.md`: Guía completa de variables de entorno

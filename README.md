@@ -8,7 +8,7 @@ Bootstrap automatizado y **100% desatendido** para Gitea `act_runner` en Windows
 
 ## ✅ Características Principales
 
-- **🚀 Ejecución 100% desatendida**: Todos los 42 scripts funcionan sin entradas interactivas
+- **🚀 Ejecución 100% desatendida**: Todos los 43 scripts funcionan sin entradas interactivas
 - **⚙️ Configuración centralizada**: Sistema completo de variables de entorno
 - **✅ Validación automática**: Script de validación con auditoría completa
 - **📚 Documentación completa**: Guías detalladas y referencia de variables
@@ -104,6 +104,8 @@ Get-ChildItem ".\scripts\60-gitea-act-runner\*.ps1" | ForEach-Object { & $_.Full
 ```powershell
 Get-ChildItem ".\scripts\70-maintenance\*.ps1" | ForEach-Object { & $_.FullName }
 ```
+
+*Nota: El script 180-install-windows-updates.ps1 instala actualizaciones sin reinicio automático para permitir ejecución continua del batch.*
 
 **Opción B: Ejecución con PowerShell (automatizada)**
 ```powershell
@@ -289,8 +291,8 @@ Remove-Item Env:GITEA_BOOTSTRAP_RUNNER_PASSWORD
 
 ## 📊 Estado del Proyecto
 
-- ✅ **Scripts totales**: 42
-- ✅ **Scripts desatendidos**: 42 (100%)
+- ✅ **Scripts totales**: 43
+- ✅ **Scripts desatendidos**: 43 (100%)
 - ✅ **Variables de entorno**: 30+
 - ✅ **Documentación completa**
 - ✅ **Validación automática**
