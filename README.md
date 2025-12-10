@@ -6,6 +6,15 @@
 
 Bootstrap automatizado y **100% desatendido** para Gitea `act_runner` en Windows Server 2025 / Windows 10/11 usando PowerShell, Chocolatey y NuGet.
 
+## 🌐 Configurar Acceso Remoto (Primer Paso)
+
+**Importante**: Antes de ejecutar cualquier script, configure el perfil de red a privado para permitir acceso remoto:
+
+```powershell
+# Cambiar perfil de red a privado (requiere ejecutar como administrador)
+Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
+```
+
 ## ✅ Características Principales
 
 - **🚀 Ejecución 100% desatendida**: Todos los 43 scripts funcionan sin entradas interactivas
