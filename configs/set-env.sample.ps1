@@ -54,7 +54,6 @@ $envVars = @{
   
   # Configuración de directorios temporales
   GITEA_BOOTSTRAP_TEMP_DIR = 'C:\Temp'                                      # Directorio temporal personalizado (dejar vacío para usar defaults del sistema)
-  GITEA_BOOTSTRAP_TMP_DIR = 'C:\Temp'                                       # Directorio TMP personalizado (dejar vacío para usar defaults del sistema)
   
   # Configuración de pagefile
   GITEA_BOOTSTRAP_PAGEFILE_SIZE = ''                                        # Tamaño del pagefile en MB (ej: '8192') - vacío para gestión automática

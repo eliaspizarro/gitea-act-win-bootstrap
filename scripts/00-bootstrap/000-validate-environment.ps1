@@ -35,7 +35,6 @@ $optionalVars = @(
   @{ Name = 'GITEA_BOOTSTRAP_USER_LOCALE'; Description = 'configuracion regional del usuario'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_INPUT_LOCALE'; Description = 'Lista de idiomas de entrada'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_TEMP_DIR'; Description = 'Directorio temporal personalizado'; Required = $false },
-  @{ Name = 'GITEA_BOOTSTRAP_TMP_DIR'; Description = 'Directorio TMP personalizado'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_SIZE'; Description = 'Tamano del pagefile en MB'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_PAGEFILE_DRIVE'; Description = 'Unidad del pagefile (default: C:)'; Required = $false },
   @{ Name = 'GITEA_BOOTSTRAP_INSTALL_DIR'; Description = 'Directorio base para instalacion de herramientas'; Required = $false },
